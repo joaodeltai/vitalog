@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { Appointment } from '@/types';
 import { Plus, Calendar, Stethoscope, Trash2, Loader2 } from 'lucide-react';
 import { formatDate, formatTime } from '@/lib/utils';
+import { useToast } from '@/components/shared/Toast';
 
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -15,7 +16,8 @@ export default function AppointmentsPage() {
   const [date, setDate] = useState('');
   const [summary, setSummary] = useState('');
   const [saving, setSaving] = useState(false);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
+  const { showToast } = useToast();
 
   const fetchAppointments = useCallback(async () => {
     setLoading(true);
@@ -31,26 +33,35 @@ export default function AppointmentsPage() {
   async function handleCreate() {
     if (!date) return;
     setSaving(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    await supabase.from('appointments').insert({
-      user_id: user.id,
-      doctor_name: doctorName || null,
-      specialty: specialty || null,
-      appointment_date: new Date(date).toISOString(),
-      summary: summary || null,
-    });
+      const { error } = await supabase.from('appointments').insert({
+        user_id: user.id,
+        doctor_name: doctorName || null,
+        specialty: specialty || null,
+        appointment_date: new Date(date).toISOString(),
+        summary: summary || null,
+      });
 
-    setDoctorName(''); setSpecialty(''); setDate(''); setSummary('');
-    setFormOpen(false);
+      if (error) throw error;
+      setDoctorName(''); setSpecialty(''); setDate(''); setSummary('');
+      setFormOpen(false);
+      fetchAppointments();
+    } catch {
+      showToast('Erro ao salvar consulta. Tente novamente.', 'error');
+    }
     setSaving(false);
-    fetchAppointments();
   }
 
   async function handleDelete(id: string) {
-    await supabase.from('appointments').delete().eq('id', id);
-    fetchAppointments();
+    try {
+      await supabase.from('appointments').delete().eq('id', id);
+      fetchAppointments();
+    } catch {
+      showToast('Erro ao excluir consulta.', 'error');
+    }
   }
 
   const upcoming = appointments.filter(a => new Date(a.appointment_date) >= new Date());

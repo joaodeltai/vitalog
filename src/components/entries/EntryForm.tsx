@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { SYMPTOM_CATEGORIES } from '@/types';
 import { X, Send, Sparkles, Loader2 } from 'lucide-react';
+import { useToast } from '@/components/shared/Toast';
 
 interface EntryFormProps {
   open: boolean;
@@ -24,6 +25,7 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState<Record<string, unknown> | null>(null);
+  const { showToast } = useToast();
 
   if (!open) return null;
 
@@ -43,7 +45,7 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
         if (data.suggested_intensity) setIntensity(data.suggested_intensity);
       }
     } catch {
-      // AI is optional, silently fail
+      showToast('Não foi possível analisar com IA. Continue normalmente.', 'warning');
     }
     setAiLoading(false);
   }
@@ -66,7 +68,7 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
       setAiResult(null);
       onClose();
     } catch {
-      // handle error
+      showToast('Erro ao salvar registro. Tente novamente.', 'error');
     }
     setLoading(false);
   }

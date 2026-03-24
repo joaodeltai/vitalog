@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { Report } from '@/types';
 import { ClipboardList, Plus, Download, Share2, Loader2, Calendar, ExternalLink, Sparkles } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { useToast } from '@/components/shared/Toast';
 
 export default function ReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
@@ -13,7 +14,8 @@ export default function ReportsPage() {
   const [periodStart, setPeriodStart] = useState('');
   const [periodEnd, setPeriodEnd] = useState('');
   const [formOpen, setFormOpen] = useState(false);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
+  const { showToast } = useToast();
 
   const fetchReports = useCallback(async () => {
     setLoading(true);
@@ -42,7 +44,7 @@ export default function ReportsPage() {
         fetchReports();
       }
     } catch {
-      // handle error
+      showToast('Erro ao gerar relatório. Tente novamente.', 'error');
     }
     setGenerating(false);
   }
@@ -53,9 +55,13 @@ export default function ReportsPage() {
       if (res.ok) {
         const data = await res.json();
         await navigator.clipboard.writeText(`${window.location.origin}/share/${data.share_token}`);
-        alert('Link copiado para a área de transferência!');
+        showToast('Link copiado para a área de transferência!', 'success');
+      } else {
+        showToast('Erro ao compartilhar relatório.', 'error');
       }
-    } catch { /* handle error */ }
+    } catch {
+      showToast('Erro ao compartilhar relatório. Tente novamente.', 'error');
+    }
   }
 
   return (

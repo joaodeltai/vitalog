@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { HealthEntry } from '@/types';
 import { SYMPTOM_CATEGORIES } from '@/types';
@@ -19,7 +19,7 @@ export default function DashboardPage() {
   const [entries, setEntries] = useState<HealthEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState(30);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const fetchEntries = useCallback(async () => {
     setLoading(true);

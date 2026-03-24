@@ -11,7 +11,7 @@ import {
 import { getInitials } from '@/lib/utils';
 
 const NAV_ITEMS = [
-  { href: '/', label: 'Home', icon: Home },
+  { href: '/home', label: 'Home', icon: Home },
   { href: '/dashboard', label: 'Evolução', icon: BarChart3 },
   { href: '/medications', label: 'Medicamentos', icon: Pill },
   { href: '/exams', label: 'Exames', icon: FileText },
@@ -64,8 +64,8 @@ export function Sidebar({ userName, avatarUrl }: SidebarProps) {
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {NAV_ITEMS.map((item) => {
           const isActive =
-            item.href === '/'
-              ? pathname === '/'
+            item.href === '/home'
+              ? pathname === '/home'
               : pathname.startsWith(item.href);
 
           return (

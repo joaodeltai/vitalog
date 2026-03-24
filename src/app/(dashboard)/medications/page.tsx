@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { Medication, MedicationLog } from '@/types';
 import {
   Plus, Pill, Clock, Check, X, MoreHorizontal,
   Loader2, Calendar, Trash2
 } from 'lucide-react';
+import { useToast } from '@/components/shared/Toast';
 
 export default function MedicationsPage() {
   const [medications, setMedications] = useState<Medication[]>([]);
@@ -17,7 +18,8 @@ export default function MedicationsPage() {
   const [dosage, setDosage] = useState('');
   const [frequency, setFrequency] = useState('');
   const [saving, setSaving] = useState(false);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
+  const { showToast } = useToast();
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -39,49 +41,66 @@ export default function MedicationsPage() {
   async function handleCreate() {
     if (!name.trim()) return;
     setSaving(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    await supabase.from('medications').insert({
-      user_id: user.id,
-      name,
-      dosage: dosage || null,
-      frequency: frequency || null,
-      is_active: true,
-    });
+      const { error } = await supabase.from('medications').insert({
+        user_id: user.id,
+        name,
+        dosage: dosage || null,
+        frequency: frequency || null,
+        is_active: true,
+      });
 
-    setName(''); setDosage(''); setFrequency('');
-    setFormOpen(false);
+      if (error) throw error;
+      setName(''); setDosage(''); setFrequency('');
+      setFormOpen(false);
+      fetchData();
+    } catch {
+      showToast('Erro ao salvar medicamento. Tente novamente.', 'error');
+    }
     setSaving(false);
-    fetchData();
   }
 
   async function handleToggleDose(medId: string) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    const existing = logs.find(l => l.medication_id === medId);
-    if (existing) {
-      await supabase.from('medication_logs').delete().eq('id', existing.id);
-    } else {
-      await supabase.from('medication_logs').insert({
-        user_id: user.id,
-        medication_id: medId,
-        taken_at: new Date().toISOString(),
-        status: 'taken',
-      });
+      const existing = logs.find(l => l.medication_id === medId);
+      if (existing) {
+        await supabase.from('medication_logs').delete().eq('id', existing.id);
+      } else {
+        await supabase.from('medication_logs').insert({
+          user_id: user.id,
+          medication_id: medId,
+          taken_at: new Date().toISOString(),
+          status: 'taken',
+        });
+      }
+      fetchData();
+    } catch {
+      showToast('Erro ao registrar dose. Tente novamente.', 'error');
     }
-    fetchData();
   }
 
   async function handleDelete(id: string) {
-    await supabase.from('medications').delete().eq('id', id);
-    fetchData();
+    try {
+      await supabase.from('medications').delete().eq('id', id);
+      fetchData();
+    } catch {
+      showToast('Erro ao excluir medicamento.', 'error');
+    }
   }
 
   async function handleToggleActive(id: string, currentActive: boolean) {
-    await supabase.from('medications').update({ is_active: !currentActive }).eq('id', id);
-    fetchData();
+    try {
+      await supabase.from('medications').update({ is_active: !currentActive }).eq('id', id);
+      fetchData();
+    } catch {
+      showToast('Erro ao atualizar medicamento.', 'error');
+    }
   }
 
   const activeMeds = medications.filter(m => m.is_active);

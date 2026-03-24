@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { Profile } from '@/types';
 import { BLOOD_TYPES } from '@/types';
 import { User, Heart, Bell, CreditCard, Save, Loader2, Check } from 'lucide-react';
+import { useToast } from '@/components/shared/Toast';
 
 type Tab = 'profile' | 'plan' | 'notifications';
 
@@ -22,7 +23,13 @@ export default function SettingsPage() {
   const [conditions, setConditions] = useState('');
   const [allergies, setAllergies] = useState('');
   const [emergencyContact, setEmergencyContact] = useState('');
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
+  const { showToast } = useToast();
+
+  // Notification preferences
+  const [notifyMedication, setNotifyMedication] = useState(true);
+  const [notifyDailyCheckin, setNotifyDailyCheckin] = useState(true);
+  const [notifyWeeklyReport, setNotifyWeeklyReport] = useState(false);
 
   const fetchProfile = useCallback(async () => {
     setLoading(true);
@@ -37,6 +44,11 @@ export default function SettingsPage() {
       setConditions((data.chronic_conditions || []).join(', '));
       setAllergies((data.allergies || []).join(', '));
       setEmergencyContact(data.emergency_contact || '');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const d = data as any;
+      setNotifyMedication(d.notify_medication ?? true);
+      setNotifyDailyCheckin(d.notify_daily_checkin ?? true);
+      setNotifyWeeklyReport(d.notify_weekly_report ?? false);
     }
     setLoading(false);
   }, [supabase]);
@@ -60,6 +72,17 @@ export default function SettingsPage() {
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  }
+
+  async function handleNotifSave(key: string, value: boolean) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { error } = await supabase.from('profiles').update({ [key]: value }).eq('id', user.id);
+      if (error) throw error;
+    } catch {
+      showToast('Erro ao salvar preferência de notificação.', 'error');
+    }
   }
 
   const TABS: { key: Tab; label: string; icon: React.ElementType }[] = [
@@ -168,9 +191,9 @@ export default function SettingsPage() {
             <div className="p-6 rounded-2xl animate-fade-in" style={{ background: 'var(--surface)', border: '1px solid var(--border-light)' }}>
               <div className="space-y-4">
                 {[
-                  { label: 'Lembrete de medicação', desc: 'Receba alertas nos horários dos medicamentos', default: true },
-                  { label: 'Check-in diário', desc: 'Lembrete para registrar como você está', default: true },
-                  { label: 'Relatório semanal', desc: 'Resumo da sua semana por email', default: false },
+                  { label: 'Lembrete de medicação', desc: 'Receba alertas nos horários dos medicamentos', checked: notifyMedication, onChange: (v: boolean) => { setNotifyMedication(v); handleNotifSave('notify_medication', v); } },
+                  { label: 'Check-in diário', desc: 'Lembrete para registrar como você está', checked: notifyDailyCheckin, onChange: (v: boolean) => { setNotifyDailyCheckin(v); handleNotifSave('notify_daily_checkin', v); } },
+                  { label: 'Relatório semanal', desc: 'Resumo da sua semana por email', checked: notifyWeeklyReport, onChange: (v: boolean) => { setNotifyWeeklyReport(v); handleNotifSave('notify_weekly_report', v); } },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center justify-between p-4 rounded-xl" style={{ background: 'var(--background)' }}>
                     <div>
@@ -178,8 +201,8 @@ export default function SettingsPage() {
                       <p className="text-xs" style={{ color: 'var(--muted)' }}>{item.desc}</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" defaultChecked={item.default} className="sr-only peer" />
-                      <div className="w-11 h-6 rounded-full peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:w-5 after:h-5 after:transition-all" style={{ background: 'var(--border)' }} />
+                      <input type="checkbox" checked={item.checked} onChange={(e) => item.onChange(e.target.checked)} className="sr-only peer" />
+                      <div className="w-11 h-6 rounded-full peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:w-5 after:h-5 after:transition-all" style={{ background: item.checked ? 'var(--primary)' : 'var(--border)' }} />
                     </label>
                   </div>
                 ))}

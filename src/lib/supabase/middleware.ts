@@ -29,26 +29,47 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const pathname = request.nextUrl.pathname;
+
   // Auth pages - redirect to dashboard if already logged in
   if (
     user &&
-    (request.nextUrl.pathname.startsWith('/login') ||
-      request.nextUrl.pathname.startsWith('/signup'))
+    (pathname.startsWith('/login') || pathname.startsWith('/signup'))
   ) {
     const url = request.nextUrl.clone();
     url.pathname = '/';
     return NextResponse.redirect(url);
   }
 
-  // Protected routes - redirect to login if not authenticated
+  // Root path: allow both authenticated (dashboard) and unauthenticated (landing)
+  // The page component decides what to render based on auth state
+  if (pathname === '/') {
+    return supabaseResponse;
+  }
+
+  // Public routes — no auth required
   if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/signup') &&
-    !request.nextUrl.pathname.startsWith('/share') &&
-    !request.nextUrl.pathname.startsWith('/api') &&
-    !request.nextUrl.pathname.startsWith('/_next')
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/signup') ||
+    pathname.startsWith('/share') ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/_next')
   ) {
+    return supabaseResponse;
+  }
+
+  // Onboarding — requires auth but NOT onboarding completion
+  if (pathname.startsWith('/onboarding')) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
+  }
+
+  // All other routes — protected, require auth
+  if (!user) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);

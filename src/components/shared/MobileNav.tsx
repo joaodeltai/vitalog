@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Home, BarChart3, Pill, ClipboardList, Settings } from 'lucide-react';
 
 const MOBILE_NAV_ITEMS = [
-  { href: '/', label: 'Home', icon: Home },
+  { href: '/home', label: 'Home', icon: Home },
   { href: '/dashboard', label: 'Evolução', icon: BarChart3 },
   { href: '/medications', label: 'Remédios', icon: Pill },
   { href: '/reports', label: 'Relatórios', icon: ClipboardList },
@@ -26,8 +26,8 @@ export function MobileNav() {
       <div className="flex items-center justify-around py-2">
         {MOBILE_NAV_ITEMS.map((item) => {
           const isActive =
-            item.href === '/'
-              ? pathname === '/'
+            item.href === '/home'
+              ? pathname === '/home'
               : pathname.startsWith(item.href);
 
           return (

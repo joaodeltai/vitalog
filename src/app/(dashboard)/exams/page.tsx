@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { Exam } from '@/types';
 import { Plus, FileText, Upload, Trash2, Loader2, ExternalLink, Calendar } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { useToast } from '@/components/shared/Toast';
 
 export default function ExamsPage() {
   const [exams, setExams] = useState<Exam[]>([]);
@@ -15,7 +16,8 @@ export default function ExamsPage() {
   const [notes, setNotes] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
+  const { showToast } = useToast();
 
   const fetchExams = useCallback(async () => {
     setLoading(true);
@@ -31,37 +33,49 @@ export default function ExamsPage() {
   async function handleCreate() {
     if (!name.trim()) return;
     setSaving(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    let fileUrl = null;
-    if (file) {
-      const ext = file.name.split('.').pop();
-      const path = `${user.id}/${Date.now()}.${ext}`;
-      const { data: uploadData } = await supabase.storage.from('exams').upload(path, file);
-      if (uploadData) {
-        const { data: urlData } = supabase.storage.from('exams').getPublicUrl(path);
-        fileUrl = urlData.publicUrl;
+      let fileUrl = null;
+      if (file) {
+        const ext = file.name.split('.').pop();
+        const path = `${user.id}/${Date.now()}.${ext}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage.from('exams').upload(path, file);
+        if (uploadError) {
+          showToast('Erro ao fazer upload do arquivo.', 'error');
+        }
+        if (uploadData) {
+          const { data: urlData } = supabase.storage.from('exams').getPublicUrl(path);
+          fileUrl = urlData.publicUrl;
+        }
       }
+
+      const { error } = await supabase.from('exams').insert({
+        user_id: user.id,
+        name,
+        exam_date: examDate || null,
+        notes: notes || null,
+        file_url: fileUrl,
+      });
+
+      if (error) throw error;
+      setName(''); setExamDate(''); setNotes(''); setFile(null);
+      setFormOpen(false);
+      fetchExams();
+    } catch {
+      showToast('Erro ao salvar exame. Tente novamente.', 'error');
     }
-
-    await supabase.from('exams').insert({
-      user_id: user.id,
-      name,
-      exam_date: examDate || null,
-      notes: notes || null,
-      file_url: fileUrl,
-    });
-
-    setName(''); setExamDate(''); setNotes(''); setFile(null);
-    setFormOpen(false);
     setSaving(false);
-    fetchExams();
   }
 
   async function handleDelete(id: string) {
-    await supabase.from('exams').delete().eq('id', id);
-    fetchExams();
+    try {
+      await supabase.from('exams').delete().eq('id', id);
+      fetchExams();
+    } catch {
+      showToast('Erro ao excluir exame.', 'error');
+    }
   }
 
   return (

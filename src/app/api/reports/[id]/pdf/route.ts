@@ -1,5 +1,163 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { renderToBuffer } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import React from 'react';
+
+const styles = StyleSheet.create({
+  page: { padding: 40, fontFamily: 'Helvetica', fontSize: 11, color: '#134E4A' },
+  header: { marginBottom: 20 },
+  title: { fontSize: 22, fontFamily: 'Helvetica-Bold', color: '#0D9488', marginBottom: 6 },
+  meta: { fontSize: 10, color: '#6B8E8B', marginBottom: 4 },
+  summaryBox: { backgroundColor: '#F7FFFE', borderLeftWidth: 3, borderLeftColor: '#0D9488', padding: 10, marginVertical: 12, borderRadius: 3 },
+  summaryText: { fontSize: 11, lineHeight: 1.5 },
+  sectionTitle: { fontSize: 15, fontFamily: 'Helvetica-Bold', color: '#0D9488', marginTop: 18, marginBottom: 8 },
+  table: { marginVertical: 8 },
+  tableHeader: { flexDirection: 'row', backgroundColor: '#0D9488', borderRadius: 3 },
+  tableHeaderCell: { flex: 1, padding: 6, color: '#FFFFFF', fontSize: 10, fontFamily: 'Helvetica-Bold' },
+  tableRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#D1E8E5' },
+  tableRowEven: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#D1E8E5', backgroundColor: '#F7FFFE' },
+  tableCell: { flex: 1, padding: 6, fontSize: 10 },
+  pattern: { backgroundColor: '#FEF3C7', borderRadius: 4, padding: 8, marginVertical: 4 },
+  patternText: { fontSize: 10 },
+  patternBold: { fontSize: 10, fontFamily: 'Helvetica-Bold' },
+  listItem: { flexDirection: 'row', marginVertical: 2 },
+  bullet: { width: 12, fontSize: 10 },
+  listText: { flex: 1, fontSize: 10, lineHeight: 1.5 },
+  footer: { marginTop: 30, paddingTop: 12, borderTopWidth: 1, borderTopColor: '#D1E8E5' },
+  footerText: { fontSize: 8, color: '#6B8E8B' },
+});
+
+function ReportPDF({ content, profile, report }: { content: Record<string, unknown>; profile: { full_name?: string | null }; report: Record<string, unknown> }) {
+  const timeline = (Array.isArray(content.timeline) ? content.timeline : []) as Array<Record<string, unknown>>;
+  const patterns = (Array.isArray(content.patterns) ? content.patterns : []) as Array<Record<string, string>>;
+  const medications = (Array.isArray(content.medications) ? content.medications : []) as Array<Record<string, unknown>>;
+  const recommendations = (Array.isArray(content.recommendations) ? content.recommendations : []) as string[];
+
+  return React.createElement(
+    Document,
+    null,
+    React.createElement(
+      Page,
+      { size: 'A4', style: styles.page },
+      // Header
+      React.createElement(
+        View,
+        { style: styles.header },
+        React.createElement(Text, { style: styles.title }, String(content.title || 'Relatório Médico — VitaLog')),
+        React.createElement(Text, { style: styles.meta }, `Paciente: ${content.patient_name || profile?.full_name || 'N/A'}`),
+        React.createElement(Text, { style: styles.meta }, `Período: ${content.period || `${report.period_start} a ${report.period_end}`}`),
+        React.createElement(Text, { style: styles.meta }, `Gerado em: ${new Date(report.created_at as string).toLocaleDateString('pt-BR')}`)
+      ),
+      // Summary
+      content.summary
+        ? React.createElement(
+            View,
+            { style: styles.summaryBox },
+            React.createElement(Text, { style: { ...styles.patternBold, marginBottom: 4 } }, 'Resumo:'),
+            React.createElement(Text, { style: styles.summaryText }, String(content.summary))
+          )
+        : null,
+      // Patterns
+      patterns.length > 0
+        ? React.createElement(
+            View,
+            null,
+            React.createElement(Text, { style: styles.sectionTitle }, 'Padrões Identificados'),
+            ...patterns.map((p, i) =>
+              React.createElement(
+                View,
+                { key: i, style: styles.pattern },
+                React.createElement(Text, { style: styles.patternBold }, p.description),
+                React.createElement(Text, { style: styles.patternText }, `${p.frequency} — ${p.severity}`)
+              )
+            )
+          )
+        : null,
+      // Timeline
+      timeline.length > 0
+        ? React.createElement(
+            View,
+            null,
+            React.createElement(Text, { style: styles.sectionTitle }, 'Timeline de Sintomas'),
+            React.createElement(
+              View,
+              { style: styles.table },
+              React.createElement(
+                View,
+                { style: styles.tableHeader },
+                React.createElement(Text, { style: styles.tableHeaderCell }, 'Data'),
+                React.createElement(Text, { style: styles.tableHeaderCell }, 'Sintoma'),
+                React.createElement(Text, { style: styles.tableHeaderCell }, 'Intensidade'),
+                React.createElement(Text, { style: styles.tableHeaderCell }, 'Categoria')
+              ),
+              ...timeline.flatMap((day, di) =>
+                ((day.entries as Array<Record<string, unknown>>) || []).map((e, ei) =>
+                  React.createElement(
+                    View,
+                    { key: `${di}-${ei}`, style: (di + ei) % 2 === 0 ? styles.tableRow : styles.tableRowEven },
+                    React.createElement(Text, { style: styles.tableCell }, new Date(day.date as string).toLocaleDateString('pt-BR')),
+                    React.createElement(Text, { style: styles.tableCell }, String(e.symptom)),
+                    React.createElement(Text, { style: styles.tableCell }, `${e.intensity}/10`),
+                    React.createElement(Text, { style: styles.tableCell }, String(e.category))
+                  )
+                )
+              )
+            )
+          )
+        : null,
+      // Medications
+      medications.length > 0
+        ? React.createElement(
+            View,
+            null,
+            React.createElement(Text, { style: styles.sectionTitle }, 'Medicamentos'),
+            React.createElement(
+              View,
+              { style: styles.table },
+              React.createElement(
+                View,
+                { style: styles.tableHeader },
+                React.createElement(Text, { style: styles.tableHeaderCell }, 'Medicamento'),
+                React.createElement(Text, { style: styles.tableHeaderCell }, 'Dosagem')
+              ),
+              ...medications.map((m, i) =>
+                React.createElement(
+                  View,
+                  { key: i, style: i % 2 === 0 ? styles.tableRow : styles.tableRowEven },
+                  React.createElement(Text, { style: styles.tableCell }, String(m.name)),
+                  React.createElement(Text, { style: styles.tableCell }, String(m.dosage || '—'))
+                )
+              )
+            )
+          )
+        : null,
+      // Recommendations
+      recommendations.length > 0
+        ? React.createElement(
+            View,
+            null,
+            React.createElement(Text, { style: styles.sectionTitle }, 'Recomendações'),
+            ...recommendations.map((r, i) =>
+              React.createElement(
+                View,
+                { key: i, style: styles.listItem },
+                React.createElement(Text, { style: styles.bullet }, '•'),
+                React.createElement(Text, { style: styles.listText }, r)
+              )
+            )
+          )
+        : null,
+      // Footer
+      React.createElement(
+        View,
+        { style: styles.footer },
+        React.createElement(Text, { style: styles.footerText }, 'Relatório gerado automaticamente pelo VitaLog — vitalog.app'),
+        React.createElement(Text, { style: styles.footerText }, 'Este relatório é informativo e não substitui avaliação médica profissional.')
+      )
+    )
+  );
+}
 
 export async function GET(
   request: Request,
@@ -15,7 +173,6 @@ export async function GET(
 
     const { id } = await params;
 
-    // Verify ownership
     const { data: report } = await supabase
       .from('reports')
       .select('*')
@@ -27,7 +184,6 @@ export async function GET(
       return NextResponse.json({ error: 'Report not found' }, { status: 404 });
     }
 
-    // Fetch profile for name
     const { data: profile } = await supabase
       .from('profiles')
       .select('full_name')
@@ -36,80 +192,16 @@ export async function GET(
 
     const content = report.content as Record<string, unknown>;
 
-    // Generate a simple HTML PDF (for MVP; can be replaced with @react-pdf/renderer for server-side)
-    const html = `
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Relatório Médico — VitaLog</title>
-  <style>
-    body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #134E4A; padding: 40px; max-width: 800px; margin: 0 auto; }
-    h1 { color: #0D9488; font-size: 24px; border-bottom: 2px solid #5EEAD4; padding-bottom: 8px; }
-    h2 { color: #0D9488; font-size: 18px; margin-top: 24px; }
-    .meta { color: #6B8E8B; font-size: 13px; margin: 8px 0 24px; }
-    .summary { background: #F7FFFE; border-left: 3px solid #0D9488; padding: 12px 16px; margin: 16px 0; border-radius: 4px; }
-    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-    th { background: #0D9488; color: white; text-align: left; padding: 8px 12px; font-size: 13px; }
-    td { padding: 8px 12px; border-bottom: 1px solid #D1E8E5; font-size: 13px; }
-    tr:nth-child(even) { background: #F7FFFE; }
-    .pattern { background: #FEF3C7; border-radius: 6px; padding: 8px 12px; margin: 6px 0; font-size: 13px; }
-    .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #D1E8E5; color: #6B8E8B; font-size: 11px; }
-  </style>
-</head>
-<body>
-  <h1>📋 ${content.title || 'Relatório Médico'}</h1>
-  <div class="meta">
-    <strong>Paciente:</strong> ${content.patient_name || profile?.full_name || 'N/A'}<br>
-    <strong>Período:</strong> ${content.period || `${report.period_start} a ${report.period_end}`}<br>
-    <strong>Gerado em:</strong> ${new Date(report.created_at).toLocaleDateString('pt-BR')}
-  </div>
+    const pdfBuffer = await renderToBuffer(
+      ReportPDF({ content, profile: profile || {}, report })
+    );
 
-  ${content.summary ? `<div class="summary"><strong>Resumo:</strong> ${content.summary}</div>` : ''}
+    const dateStr = report.period_start || new Date().toISOString().split('T')[0];
 
-  ${Array.isArray(content.patterns) && (content.patterns as Array<Record<string, string>>).length > 0 ? `
-    <h2>🔍 Padrões Identificados</h2>
-    ${(content.patterns as Array<Record<string, string>>).map((p) => `<div class="pattern">⚠️ <strong>${p.description}</strong> — ${p.frequency} (${p.severity})</div>`).join('')}
-  ` : ''}
-
-  ${Array.isArray(content.timeline) && (content.timeline as Array<Record<string, unknown>>).length > 0 ? `
-    <h2>📅 Timeline de Sintomas</h2>
-    <table>
-      <tr><th>Data</th><th>Sintoma</th><th>Intensidade</th><th>Categoria</th></tr>
-      ${(content.timeline as Array<Record<string, unknown>>).map((day) =>
-        (day.entries as Array<Record<string, unknown>>).map((e) =>
-          `<tr><td>${new Date(day.date as string).toLocaleDateString('pt-BR')}</td><td>${e.symptom}</td><td>${e.intensity}/10</td><td>${e.category}</td></tr>`
-        ).join('')
-      ).join('')}
-    </table>
-  ` : ''}
-
-  ${Array.isArray(content.medications) && (content.medications as Array<Record<string, unknown>>).length > 0 ? `
-    <h2>💊 Medicamentos</h2>
-    <table>
-      <tr><th>Medicamento</th><th>Dosagem</th></tr>
-      ${(content.medications as Array<Record<string, string>>).map((m) =>
-        `<tr><td>${m.name}</td><td>${m.dosage || '—'}</td></tr>`
-      ).join('')}
-    </table>
-  ` : ''}
-
-  ${Array.isArray(content.recommendations) && (content.recommendations as string[]).length > 0 ? `
-    <h2>💡 Recomendações</h2>
-    <ul>${(content.recommendations as string[]).map((r) => `<li>${r}</li>`).join('')}</ul>
-  ` : ''}
-
-  <div class="footer">
-    Relatório gerado automaticamente pelo VitaLog — vitalog.app<br>
-    Este relatório é informativo e não substitui avaliação médica profissional.
-  </div>
-</body>
-</html>`;
-
-    return new Response(html, {
+    return new Response(new Uint8Array(pdfBuffer), {
       headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Content-Disposition': `inline; filename="relatorio-vitalog-${report.period_start}.html"`,
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="relatorio-vitalog-${dateStr}.pdf"`,
       },
     });
   } catch (error) {
