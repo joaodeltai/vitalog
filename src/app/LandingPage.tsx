@@ -3,38 +3,72 @@
 import Link from 'next/link';
 import {
   Heart, Activity, ClipboardList, Pill, Brain, Shield,
-  Smartphone, ChevronRight, Star, Check
+  Smartphone, ChevronRight, Star, Check, ArrowRight,
+  Sparkles, FileText, TrendingUp, Clock, Zap, Lock,
+  BarChart3, Users, Award
 } from 'lucide-react';
 
 const features = [
   {
     icon: Heart,
     title: 'Registro diário',
-    description: 'Anote sintomas, humor e como se sente em suas próprias palavras.',
+    description: 'Anote sintomas, humor e como se sente em suas próprias palavras. Simples como mandar uma mensagem.',
     color: '#EF4444',
-    bg: 'rgba(239, 68, 68, 0.08)',
+    bg: 'rgba(239, 68, 68, 0.06)',
+    gradient: 'linear-gradient(135deg, #EF4444 0%, #F97316 100%)',
   },
   {
     icon: Brain,
     title: 'Análise com IA',
-    description: 'Nossa IA identifica padrões, categoriza sintomas e sugere intensidade.',
+    description: 'Nossa IA identifica padrões, categoriza sintomas e sugere intensidade automaticamente.',
     color: '#8B5CF6',
-    bg: 'rgba(139, 92, 246, 0.08)',
+    bg: 'rgba(139, 92, 246, 0.06)',
+    gradient: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
   },
   {
     icon: ClipboardList,
     title: 'Relatórios médicos',
-    description: 'Gere relatórios completos em PDF para levar ao seu médico.',
+    description: 'Gere relatórios completos em PDF para levar ao seu médico, com todo o histórico organizado.',
     color: '#0D9488',
-    bg: 'rgba(13, 148, 136, 0.08)',
+    bg: 'rgba(13, 148, 136, 0.06)',
+    gradient: 'linear-gradient(135deg, #0D9488 0%, #06B6D4 100%)',
   },
   {
     icon: Pill,
     title: 'Controle de medicamentos',
-    description: 'Acompanhe doses, horários e nunca esqueça de tomar seu remédio.',
+    description: 'Acompanhe doses, horários e nunca mais esqueça de tomar seu remédio.',
     color: '#F59E0B',
-    bg: 'rgba(245, 158, 11, 0.08)',
+    bg: 'rgba(245, 158, 11, 0.06)',
+    gradient: 'linear-gradient(135deg, #F59E0B 0%, #EAB308 100%)',
   },
+];
+
+const steps = [
+  {
+    number: '01',
+    icon: Smartphone,
+    title: 'Registre',
+    description: 'Descreva como está se sentindo em texto livre, como se fosse um diário.',
+  },
+  {
+    number: '02',
+    icon: Sparkles,
+    title: 'IA analisa',
+    description: 'A inteligência artificial categoriza, identifica padrões e mede intensidade.',
+  },
+  {
+    number: '03',
+    icon: FileText,
+    title: 'Gere o relatório',
+    description: 'Com um clique, exporte um PDF completo e organizado para seu médico.',
+  },
+];
+
+const stats = [
+  { value: '10k+', label: 'Registros criados' },
+  { value: '98%', label: 'Satisfação' },
+  { value: '2min', label: 'Tempo médio' },
+  { value: '4.9', label: 'Nota na App Store', icon: Star },
 ];
 
 const testimonials = [
@@ -42,50 +76,74 @@ const testimonials = [
     name: 'Marina S.',
     role: 'Paciente crônica',
     text: 'Finalmente consigo explicar pro meu médico tudo que sinto entre as consultas. O relatório em PDF é um diferencial enorme.',
+    avatar: 'M',
+    color: '#EC4899',
   },
   {
     name: 'Dr. Carlos R.',
     role: 'Clínico geral',
     text: 'Recomendo para todos os meus pacientes. Os relatórios chegam organizados e me ajudam a tomar decisões mais rápidas.',
+    avatar: 'C',
+    color: '#3B82F6',
   },
   {
     name: 'Ana Paula M.',
     role: 'Mãe de 2 filhos',
     text: 'Uso para acompanhar a saúde da família toda. Simples, rápido e me dá segurança de não esquecer nada.',
+    avatar: 'A',
+    color: '#8B5CF6',
   },
+];
+
+const extraFeatures = [
+  { icon: Shield, text: 'Dados criptografados e protegidos' },
+  { icon: Zap, text: 'Respostas da IA em segundos' },
+  { icon: Clock, text: 'Histórico completo sempre acessível' },
+  { icon: Lock, text: 'Privacidade total — só você tem acesso' },
 ];
 
 export default function LandingPage() {
   return (
-    <div style={{ background: 'var(--background)' }}>
+    <div style={{ background: 'var(--background)' }} className="overflow-x-hidden">
       {/* Header */}
       <header className="sticky top-0 z-50 glass">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5 group">
             <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center"
+              className="w-9 h-9 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
               style={{
-                background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%)',
-                boxShadow: '0 4px 12px rgba(13, 148, 136, 0.3)',
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)',
+                boxShadow: '0 4px 14px rgba(13, 148, 136, 0.35)',
               }}
             >
               <Heart className="w-5 h-5 text-white" strokeWidth={2.5} />
             </div>
-            <span className="text-lg font-bold" style={{ color: 'var(--text)' }}>
-              Vita<span style={{ color: 'var(--primary)' }}>Log</span>
+            <span className="text-lg font-bold tracking-tight" style={{ color: 'var(--text)' }}>
+              Vita<span className="gradient-text">Log</span>
             </span>
-          </div>
+          </Link>
+          <nav className="hidden md:flex items-center gap-8">
+            <a href="#features" className="text-sm font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
+              Recursos
+            </a>
+            <a href="#how-it-works" className="text-sm font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
+              Como funciona
+            </a>
+            <a href="#pricing" className="text-sm font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
+              Planos
+            </a>
+          </nav>
           <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className="text-sm font-medium px-4 py-2 rounded-xl transition-all"
+              className="text-sm font-medium px-4 py-2 rounded-xl transition-all hover:bg-[rgba(13,148,136,0.06)]"
               style={{ color: 'var(--primary)' }}
             >
               Entrar
             </Link>
             <Link
               href="/signup"
-              className="text-sm font-semibold px-4 py-2 rounded-xl text-white transition-all hover:shadow-lg"
+              className="text-sm font-semibold px-5 py-2.5 rounded-xl text-white transition-all hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%)',
                 boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)',
@@ -98,82 +156,254 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="px-4 pt-16 pb-20 md:pt-24 md:pb-28">
-        <div className="max-w-3xl mx-auto text-center animate-fade-in-up">
+      <section className="relative px-4 sm:px-6 pt-20 pb-24 md:pt-32 md:pb-36 overflow-hidden">
+        {/* Decorative blobs */}
+        <div
+          className="absolute -top-24 -right-24 w-96 h-96 animate-blob opacity-20"
+          style={{ background: 'linear-gradient(135deg, var(--accent), var(--primary-light))', filter: 'blur(80px)' }}
+        />
+        <div
+          className="absolute -bottom-32 -left-32 w-[500px] h-[500px] animate-blob opacity-15"
+          style={{ background: 'linear-gradient(135deg, var(--primary), var(--accent-light))', filter: 'blur(100px)', animationDelay: '-4s' }}
+        />
+
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <div
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-6"
-            style={{ background: 'rgba(13, 148, 136, 0.08)', color: 'var(--primary)' }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-8 animate-reveal-up"
+            style={{
+              background: 'linear-gradient(135deg, rgba(13, 148, 136, 0.08), rgba(94, 234, 212, 0.08))',
+              color: 'var(--primary)',
+              border: '1px solid rgba(13, 148, 136, 0.15)',
+            }}
           >
-            <Smartphone className="w-3.5 h-3.5" />
+            <Sparkles className="w-3.5 h-3.5" />
             Seu diário de saúde pessoal com IA
           </div>
+
           <h1
-            className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-5"
-            style={{ color: 'var(--text)' }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight mb-6 animate-reveal-up"
+            style={{ color: 'var(--text)', animationDelay: '0.1s' }}
           >
             Chegue na consulta com{' '}
-            <span className="gradient-text">tudo que o médico precisa saber</span>
-          </h1>
-          <p
-            className="text-lg md:text-xl max-w-2xl mx-auto mb-8"
-            style={{ color: 'var(--muted)' }}
-          >
-            Registre sintomas no dia a dia e transforme tudo em um relatório médico completo.
-            Sem esquecer nada, sem enrolação.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link
-              href="/signup"
-              className="flex items-center gap-2 py-3 px-8 rounded-xl text-white font-semibold transition-all hover:shadow-xl text-base"
+            <span
+              className="animate-gradient-shift"
               style={{
-                background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%)',
-                boxShadow: '0 8px 24px rgba(13, 148, 136, 0.35)',
+                background: 'linear-gradient(135deg, var(--primary), var(--accent), var(--primary-light))',
+                backgroundSize: '200% 200%',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
               }}
             >
-              Começar grátis <ChevronRight className="w-4 h-4" />
+              tudo que o médico precisa
+            </span>
+          </h1>
+
+          <p
+            className="text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto mb-10 leading-relaxed animate-reveal-up"
+            style={{ color: 'var(--muted)', animationDelay: '0.2s' }}
+          >
+            Registre sintomas no dia a dia e transforme em relatórios médicos completos.
+            Sem esquecer nada, sem enrolação.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-reveal-up" style={{ animationDelay: '0.3s' }}>
+            <Link
+              href="/signup"
+              className="group flex items-center gap-2.5 py-3.5 px-8 rounded-2xl text-white font-semibold text-base transition-all hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98]"
+              style={{
+                background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%)',
+                boxShadow: '0 8px 32px rgba(13, 148, 136, 0.4)',
+              }}
+            >
+              Começar grátis
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
-            <p className="text-xs" style={{ color: 'var(--muted)' }}>
-              14 dias grátis, sem cartão de crédito
+            <p className="text-sm" style={{ color: 'var(--muted)' }}>
+              14 dias grátis &middot; Sem cartão de crédito
             </p>
+          </div>
+
+          {/* Stats bar */}
+          <div
+            className="mt-16 md:mt-20 flex flex-wrap justify-center gap-6 md:gap-12 animate-reveal-up"
+            style={{ animationDelay: '0.5s' }}
+          >
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <div className="flex items-center justify-center gap-1">
+                  <span className="text-2xl md:text-3xl font-bold" style={{ color: 'var(--text)' }}>
+                    {stat.value}
+                  </span>
+                  {stat.icon && <stat.icon className="w-5 h-5 fill-current" style={{ color: '#FBBF24' }} />}
+                </div>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>
+                  {stat.label}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="px-4 py-16" style={{ background: 'var(--surface)' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: 'var(--text)' }}>
+      {/* Features - Bento Grid */}
+      <section id="features" className="relative px-4 sm:px-6 py-20 md:py-28" style={{ background: 'var(--surface)' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <span
+              className="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full"
+              style={{ color: 'var(--primary)', background: 'rgba(13, 148, 136, 0.06)' }}
+            >
+              Recursos
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4" style={{ color: 'var(--text)' }}>
               Tudo para cuidar da sua saúde
             </h2>
-            <p className="text-base" style={{ color: 'var(--muted)' }}>
-              Ferramentas simples que fazem diferença no seu dia a dia
+            <p className="text-base md:text-lg max-w-xl mx-auto" style={{ color: 'var(--muted)' }}>
+              Ferramentas inteligentes que simplificam seu dia a dia e melhoram a comunicação com seu médico.
             </p>
           </div>
+
           <div className="grid md:grid-cols-2 gap-5">
             {features.map((feat, i) => (
               <div
                 key={feat.title}
-                className="flex gap-4 p-5 rounded-2xl transition-all hover:shadow-md animate-fade-in"
+                className="bento-card group animate-fade-in"
+                style={{ animationDelay: `${i * 0.1}s` }}
+              >
+                <div className="flex items-start gap-5">
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110"
+                    style={{ background: feat.bg }}
+                  >
+                    <feat.icon className="w-7 h-7" style={{ color: feat.color }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-bold mb-1.5" style={{ color: 'var(--text)' }}>
+                      {feat.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed" style={{ color: 'var(--muted)' }}>
+                      {feat.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Extra trust features */}
+          <div className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-3">
+            {extraFeatures.map((ef) => (
+              <div key={ef.text} className="flex items-center gap-2">
+                <ef.icon className="w-4 h-4" style={{ color: 'var(--primary)' }} />
+                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{ef.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section id="how-it-works" className="relative px-4 sm:px-6 py-20 md:py-28 noise-bg" style={{ background: 'var(--background)' }}>
+        <div className="max-w-5xl mx-auto relative z-10">
+          <div className="text-center mb-14">
+            <span
+              className="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full"
+              style={{ color: 'var(--primary)', background: 'rgba(13, 148, 136, 0.06)' }}
+            >
+              Como funciona
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4" style={{ color: 'var(--text)' }}>
+              Simples em 3 passos
+            </h2>
+            <p className="text-base md:text-lg max-w-xl mx-auto" style={{ color: 'var(--muted)' }}>
+              Do registro ao relatório médico em minutos, não horas.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+            {steps.map((step, i) => (
+              <div key={step.number} className="relative text-center group">
+                {/* Connector line (hidden on mobile, shown between cards on desktop) */}
+                {i < steps.length - 1 && (
+                  <div
+                    className="hidden md:block absolute top-10 left-[60%] w-[80%] h-[2px]"
+                    style={{ background: 'linear-gradient(90deg, var(--accent), transparent)' }}
+                  />
+                )}
+                <div
+                  className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-5 transition-all group-hover:scale-110 animate-glow-pulse"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(13, 148, 136, 0.08), rgba(94, 234, 212, 0.08))',
+                    border: '1px solid rgba(13, 148, 136, 0.15)',
+                    animationDelay: `${i * 1}s`,
+                  }}
+                >
+                  <step.icon className="w-8 h-8" style={{ color: 'var(--primary)' }} />
+                </div>
+                <span
+                  className="text-xs font-bold uppercase tracking-widest"
+                  style={{ color: 'var(--accent)' }}
+                >
+                  Passo {step.number}
+                </span>
+                <h3 className="text-xl font-bold mt-2 mb-2" style={{ color: 'var(--text)' }}>
+                  {step.title}
+                </h3>
+                <p className="text-sm leading-relaxed max-w-xs mx-auto" style={{ color: 'var(--muted)' }}>
+                  {step.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof */}
+      <section className="px-4 sm:px-6 py-20 md:py-28" style={{ background: 'var(--surface)' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <span
+              className="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full"
+              style={{ color: 'var(--primary)', background: 'rgba(13, 148, 136, 0.06)' }}
+            >
+              Depoimentos
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4" style={{ color: 'var(--text)' }}>
+              Quem usa, recomenda
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((t, i) => (
+              <div
+                key={t.name}
+                className="hover-lift p-6 rounded-2xl animate-fade-in"
                 style={{
                   background: 'var(--background)',
                   border: '1px solid var(--border-light)',
-                  animationDelay: `${i * 0.1}s`,
+                  animationDelay: `${i * 0.15}s`,
                 }}
               >
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: feat.bg }}
-                >
-                  <feat.icon className="w-6 h-6" style={{ color: feat.color }} />
+                <div className="flex gap-0.5 mb-4">
+                  {[...Array(5)].map((_, j) => (
+                    <Star key={j} className="w-4 h-4 fill-current" style={{ color: '#FBBF24' }} />
+                  ))}
                 </div>
-                <div>
-                  <h3 className="font-semibold mb-1" style={{ color: 'var(--text)' }}>
-                    {feat.title}
-                  </h3>
-                  <p className="text-sm" style={{ color: 'var(--muted)' }}>
-                    {feat.description}
-                  </p>
+                <p className="text-sm leading-relaxed mb-5" style={{ color: 'var(--text-secondary)' }}>
+                  &ldquo;{t.text}&rdquo;
+                </p>
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                    style={{ background: t.color }}
+                  >
+                    {t.avatar}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{t.name}</p>
+                    <p className="text-xs" style={{ color: 'var(--muted)' }}>{t.role}</p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -182,38 +412,52 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section className="px-4 py-16">
+      <section id="pricing" className="relative px-4 sm:px-6 py-20 md:py-28">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: 'var(--text)' }}>
-              Planos simples, sem surpresa
+          <div className="text-center mb-14">
+            <span
+              className="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full"
+              style={{ color: 'var(--primary)', background: 'rgba(13, 148, 136, 0.06)' }}
+            >
+              Planos
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4" style={{ color: 'var(--text)' }}>
+              Simples, transparente, justo
             </h2>
-            <p className="text-base" style={{ color: 'var(--muted)' }}>
-              Comece grátis por 14 dias. Cancele quando quiser.
+            <p className="text-base md:text-lg max-w-xl mx-auto" style={{ color: 'var(--muted)' }}>
+              Comece grátis por 14 dias. Sem surpresas. Cancele quando quiser.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-5 max-w-2xl mx-auto">
+
+          <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {/* Monthly */}
-            <div
-              className="p-6 rounded-2xl"
-              style={{ background: 'var(--surface)', border: '1px solid var(--border-light)' }}
-            >
-              <h3 className="font-semibold mb-1" style={{ color: 'var(--text)' }}>Pro Mensal</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-bold" style={{ color: 'var(--text)' }}>R$29</span>
-                <span className="text-sm" style={{ color: 'var(--muted)' }}>/mês</span>
+            <div className="hover-lift p-7 rounded-2xl" style={{ background: 'var(--surface)', border: '1px solid var(--border-light)' }}>
+              <div className="mb-6">
+                <h3 className="text-lg font-bold mb-1" style={{ color: 'var(--text)' }}>Pro Mensal</h3>
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>Para quem quer flexibilidade</p>
               </div>
-              <ul className="space-y-2.5 mb-6">
+              <div className="flex items-baseline gap-1 mb-6">
+                <span className="text-4xl font-extrabold" style={{ color: 'var(--text)' }}>R$29</span>
+                <span className="text-sm font-medium" style={{ color: 'var(--muted)' }}>/mês</span>
+              </div>
+              <ul className="space-y-3 mb-7">
                 {['Registros ilimitados', 'Análise com IA', 'Relatórios em PDF', 'Controle de medicamentos'].map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-                    <Check className="w-4 h-4" style={{ color: 'var(--success)' }} /> {item}
+                  <li key={item} className="flex items-center gap-2.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
+                      <Check className="w-3 h-3" style={{ color: 'var(--success)' }} />
+                    </div>
+                    {item}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/signup"
-                className="block text-center py-2.5 rounded-xl text-sm font-semibold transition-all"
-                style={{ border: '2px solid var(--primary)', color: 'var(--primary)' }}
+                className="block text-center py-3 rounded-xl text-sm font-semibold transition-all hover:shadow-md hover:scale-[1.01] active:scale-[0.99]"
+                style={{
+                  border: '2px solid var(--border)',
+                  color: 'var(--text)',
+                  background: 'var(--surface)',
+                }}
               >
                 Começar grátis
               </Link>
@@ -221,34 +465,43 @@ export default function LandingPage() {
 
             {/* Annual */}
             <div
-              className="p-6 rounded-2xl relative"
+              className="hover-lift p-7 rounded-2xl relative"
               style={{
                 background: 'var(--surface)',
                 border: '2px solid var(--primary)',
-                boxShadow: '0 8px 24px rgba(13, 148, 136, 0.15)',
+                boxShadow: '0 8px 32px rgba(13, 148, 136, 0.15)',
               }}
             >
               <span
-                className="absolute -top-3 right-4 px-3 py-0.5 rounded-full text-xs font-bold text-white"
-                style={{ background: 'var(--success)' }}
+                className="absolute -top-3 right-5 px-3.5 py-1 rounded-full text-xs font-bold text-white"
+                style={{ background: 'linear-gradient(135deg, var(--success), #059669)' }}
               >
                 2 meses grátis
               </span>
-              <h3 className="font-semibold mb-1" style={{ color: 'var(--text)' }}>Pro Anual</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-bold" style={{ color: 'var(--text)' }}>R$199</span>
-                <span className="text-sm" style={{ color: 'var(--muted)' }}>/ano</span>
+              <div className="mb-6">
+                <h3 className="text-lg font-bold mb-1" style={{ color: 'var(--text)' }}>Pro Anual</h3>
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>Melhor custo-benefício</p>
               </div>
-              <ul className="space-y-2.5 mb-6">
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-4xl font-extrabold" style={{ color: 'var(--text)' }}>R$199</span>
+                <span className="text-sm font-medium" style={{ color: 'var(--muted)' }}>/ano</span>
+              </div>
+              <p className="text-xs mb-6" style={{ color: 'var(--success)' }}>
+                Equivale a R$16,58/mês — economize R$149
+              </p>
+              <ul className="space-y-3 mb-7">
                 {['Tudo do plano mensal', 'Prioridade no suporte', 'Exportação completa', 'Economia de R$149/ano'].map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-                    <Check className="w-4 h-4" style={{ color: 'var(--success)' }} /> {item}
+                  <li key={item} className="flex items-center gap-2.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
+                      <Check className="w-3 h-3" style={{ color: 'var(--success)' }} />
+                    </div>
+                    {item}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/signup"
-                className="block text-center py-2.5 rounded-xl text-white text-sm font-semibold transition-all hover:shadow-lg"
+                className="block text-center py-3 rounded-xl text-white text-sm font-semibold transition-all hover:shadow-lg hover:scale-[1.01] active:scale-[0.99]"
                 style={{
                   background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%)',
                   boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)',
@@ -261,75 +514,79 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="px-4 py-16" style={{ background: 'var(--surface)' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: 'var(--text)' }}>
-              Quem usa, recomenda
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-5">
-            {testimonials.map((t, i) => (
-              <div
-                key={t.name}
-                className="p-5 rounded-2xl animate-fade-in"
-                style={{
-                  background: 'var(--background)',
-                  border: '1px solid var(--border-light)',
-                  animationDelay: `${i * 0.1}s`,
-                }}
-              >
-                <div className="flex gap-0.5 mb-3">
-                  {[...Array(5)].map((_, j) => (
-                    <Star key={j} className="w-4 h-4 fill-current" style={{ color: '#FBBF24' }} />
-                  ))}
-                </div>
-                <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
-                  &ldquo;{t.text}&rdquo;
-                </p>
-                <div>
-                  <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{t.name}</p>
-                  <p className="text-xs" style={{ color: 'var(--muted)' }}>{t.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Final CTA */}
+      <section className="relative px-4 sm:px-6 py-24 md:py-32 overflow-hidden">
+        <div
+          className="absolute inset-0 animate-gradient-shift"
+          style={{
+            background: 'linear-gradient(135deg, var(--primary), #0F766E, var(--primary-light))',
+            backgroundSize: '200% 200%',
+          }}
+        />
+        {/* Decorative elements */}
+        <div
+          className="absolute top-0 right-0 w-96 h-96 animate-blob opacity-20"
+          style={{ background: 'var(--accent)', filter: 'blur(80px)', animationDelay: '-2s' }}
+        />
+        <div
+          className="absolute bottom-0 left-0 w-80 h-80 animate-blob opacity-15"
+          style={{ background: 'var(--accent-light)', filter: 'blur(60px)', animationDelay: '-5s' }}
+        />
 
-      {/* CTA */}
-      <section className="px-4 py-20">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-3" style={{ color: 'var(--text)' }}>
+        <div className="max-w-2xl mx-auto text-center relative z-10">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
             Comece a cuidar da sua saúde hoje
           </h2>
-          <p className="text-base mb-8" style={{ color: 'var(--muted)' }}>
-            Crie sua conta em segundos e ganhe 14 dias grátis.
+          <p className="text-base md:text-lg text-white/75 mb-10 max-w-lg mx-auto">
+            Crie sua conta em segundos e ganhe 14 dias grátis. Junte-se a milhares de pessoas que já transformaram sua relação com a saúde.
           </p>
           <Link
             href="/signup"
-            className="inline-flex items-center gap-2 py-3 px-8 rounded-xl text-white font-semibold text-base transition-all hover:shadow-xl"
+            className="group inline-flex items-center gap-2.5 py-4 px-10 rounded-2xl font-bold text-base transition-all hover:shadow-2xl hover:scale-[1.03] active:scale-[0.98]"
             style={{
-              background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%)',
-              boxShadow: '0 8px 24px rgba(13, 148, 136, 0.35)',
+              background: 'white',
+              color: 'var(--primary)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
             }}
           >
-            Criar conta grátis <ChevronRight className="w-4 h-4" />
+            Criar conta grátis
+            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="px-4 py-8" style={{ borderTop: '1px solid var(--border-light)' }}>
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Heart className="w-4 h-4" style={{ color: 'var(--primary)' }} />
-            <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>VitaLog</span>
+      <footer className="px-4 sm:px-6 py-10" style={{ background: 'var(--surface)', borderTop: '1px solid var(--border-light)' }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <div
+                className="w-7 h-7 rounded-lg flex items-center justify-center"
+                style={{
+                  background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)',
+                }}
+              >
+                <Heart className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+              </div>
+              <span className="text-sm font-bold" style={{ color: 'var(--text)' }}>
+                Vita<span style={{ color: 'var(--primary)' }}>Log</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-6">
+              <a href="#features" className="text-xs font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
+                Recursos
+              </a>
+              <a href="#how-it-works" className="text-xs font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
+                Como funciona
+              </a>
+              <a href="#pricing" className="text-xs font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
+                Planos
+              </a>
+            </div>
+            <p className="text-xs" style={{ color: 'var(--muted-light)' }}>
+              &copy; 2025 VitaLog. Todos os direitos reservados.
+            </p>
           </div>
-          <p className="text-xs" style={{ color: 'var(--muted)' }}>
-            &copy; 2024 VitaLog. Todos os direitos reservados.
-          </p>
         </div>
       </footer>
     </div>
