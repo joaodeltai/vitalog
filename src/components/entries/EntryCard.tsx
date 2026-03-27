@@ -1,9 +1,10 @@
 'use client';
 
-import { SYMPTOM_CATEGORIES, INTENSITY_LABELS } from '@/types';
+import { SYMPTOM_CATEGORIES } from '@/types';
 import type { HealthEntry } from '@/types';
 import { relativeTime, intensityColor } from '@/lib/utils';
 import { Trash2, Sparkles } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n';
 
 interface EntryCardProps {
   entry: HealthEntry;
@@ -13,7 +14,14 @@ interface EntryCardProps {
 
 export function EntryCard({ entry, onDelete, index = 0 }: EntryCardProps) {
   const category = SYMPTOM_CATEGORIES.find((c) => c.value === entry.category);
-  const intensityInfo = entry.intensity ? INTENSITY_LABELS[entry.intensity] : null;
+  const { t } = useTranslation();
+  const intensityLabel = entry.intensity ? t.intensityLabels[entry.intensity] : null;
+  const intensityColor_ = entry.intensity ? intensityColor(entry.intensity) : null;
+
+  function getCategoryLabel(value: string): string {
+    const key = value as keyof typeof t.symptomCategories;
+    return t.symptomCategories[key] || value;
+  }
 
   return (
     <div
@@ -35,7 +43,7 @@ export function EntryCard({ entry, onDelete, index = 0 }: EntryCardProps) {
                 color: category.color,
               }}
             >
-              {category.emoji} {category.label}
+              {category.emoji} {getCategoryLabel(category.value)}
             </span>
           )}
           {entry.ai_processed && (
@@ -61,7 +69,7 @@ export function EntryCard({ entry, onDelete, index = 0 }: EntryCardProps) {
               onClick={() => onDelete(entry.id)}
               className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg cursor-pointer"
               style={{ color: 'var(--muted)' }}
-              title="Excluir registro"
+              title={t.entryCard.deleteEntry}
             >
               <Trash2 className="w-4 h-4" />
             </button>
@@ -92,11 +100,11 @@ export function EntryCard({ entry, onDelete, index = 0 }: EntryCardProps) {
       {/* Footer */}
       <div className="flex items-center justify-between">
         <span className="text-xs" style={{ color: 'var(--muted)' }}>
-          {relativeTime(entry.entry_date)}
+          {relativeTime(entry.entry_date, t)}
         </span>
-        {intensityInfo && (
-          <span className="text-[11px] font-medium" style={{ color: intensityInfo.color }}>
-            {intensityInfo.label}
+        {intensityLabel && (
+          <span className="text-[11px] font-medium" style={{ color: intensityColor_ || undefined }}>
+            {intensityLabel}
           </span>
         )}
       </div>

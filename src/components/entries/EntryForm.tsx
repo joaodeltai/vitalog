@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { SYMPTOM_CATEGORIES } from '@/types';
 import { X, Send, Sparkles, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/shared/Toast';
+import { useTranslation } from '@/lib/i18n';
 
 interface EntryFormProps {
   open: boolean;
@@ -26,8 +27,14 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState<Record<string, unknown> | null>(null);
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   if (!open) return null;
+
+  function getCategoryLabel(value: string): string {
+    const key = value as keyof typeof t.symptomCategories;
+    return t.symptomCategories[key] || value;
+  }
 
   async function handleAIProcess() {
     if (!content.trim()) return;
@@ -45,7 +52,7 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
         if (data.suggested_intensity) setIntensity(data.suggested_intensity);
       }
     } catch {
-      showToast('Não foi possível analisar com IA. Continue normalmente.', 'warning');
+      showToast(t.entryForm.errorAI, 'warning');
     }
     setAiLoading(false);
   }
@@ -68,13 +75,12 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
       setAiResult(null);
       onClose();
     } catch {
-      showToast('Erro ao salvar registro. Tente novamente.', 'error');
+      showToast(t.entryForm.errorSave, 'error');
     }
     setLoading(false);
   }
 
   function getIntensityGradient() {
-    const pct = ((intensity - 1) / 9) * 100;
     return `linear-gradient(90deg, #10B981 0%, #FBBF24 50%, #EF4444 100%)`;
   }
 
@@ -97,7 +103,7 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
-            Novo registro
+            {t.entryForm.title}
           </h2>
           <button
             onClick={onClose}
@@ -113,7 +119,7 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Como você está se sentindo? Descreva em suas próprias palavras..."
+            placeholder={t.entryForm.placeholder}
             rows={4}
             autoFocus
             className="w-full py-3 px-4 rounded-xl text-sm outline-none transition-all resize-none"
@@ -139,7 +145,7 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
               ) : (
                 <Sparkles className="w-3.5 h-3.5" />
               )}
-              {aiLoading ? 'Analisando...' : 'Analisar com IA'}
+              {aiLoading ? t.entryForm.analyzing : t.entryForm.analyzeAI}
             </button>
           )}
         </div>
@@ -152,7 +158,7 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
           >
             <div className="flex items-center gap-1.5 mb-2">
               <Sparkles className="w-4 h-4" style={{ color: 'var(--primary)' }} />
-              <span className="font-medium" style={{ color: 'var(--primary)' }}>Análise da IA</span>
+              <span className="font-medium" style={{ color: 'var(--primary)' }}>{t.entryForm.aiAnalysis}</span>
             </div>
             {!!(aiResult as Record<string, unknown>).summary && (
               <p className="text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>
@@ -165,7 +171,7 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
         {/* Intensity slider */}
         <div className="mb-4">
           <label className="flex items-center justify-between text-sm font-medium mb-2">
-            <span style={{ color: 'var(--text-secondary)' }}>Intensidade</span>
+            <span style={{ color: 'var(--text-secondary)' }}>{t.entryForm.intensity}</span>
             <span className="text-lg font-bold" style={{ color: 'var(--text)' }}>{intensity}</span>
           </label>
           <input
@@ -181,16 +187,16 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
             }}
           />
           <div className="flex justify-between text-[10px] mt-1" style={{ color: 'var(--muted)' }}>
-            <span>Leve</span>
-            <span>Moderado</span>
-            <span>Severo</span>
+            <span>{t.entryForm.mild}</span>
+            <span>{t.entryForm.moderate}</span>
+            <span>{t.entryForm.severe}</span>
           </div>
         </div>
 
         {/* Category selector */}
         <div className="mb-6">
           <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
-            Categoria
+            {t.entryForm.category}
           </label>
           <div className="grid grid-cols-4 gap-2">
             {SYMPTOM_CATEGORIES.map((cat) => (
@@ -206,7 +212,7 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
                 }}
               >
                 <span className="text-base">{cat.emoji}</span>
-                {cat.label}
+                {getCategoryLabel(cat.value)}
               </button>
             ))}
           </div>
@@ -227,7 +233,7 @@ export function EntryForm({ open, onClose, onSubmit }: EntryFormProps) {
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
             <>
-              <Send className="w-4 h-4" /> Salvar registro
+              <Send className="w-4 h-4" /> {t.entryForm.saveEntry}
             </>
           )}
         </button>

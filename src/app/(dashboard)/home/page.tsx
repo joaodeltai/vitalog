@@ -5,17 +5,25 @@ import { useHealthEntries } from '@/hooks/useHealthEntries';
 import { EntryCard } from '@/components/entries/EntryCard';
 import { EntryForm } from '@/components/entries/EntryForm';
 import { Plus, Heart, ClipboardList, Pill, Activity } from 'lucide-react';
-import { getGreeting } from '@/lib/utils';
 import Link from 'next/link';
+import { useTranslation } from '@/lib/i18n';
 
 export default function HomePage() {
   const { entries, loading, createEntry, deleteEntry } = useHealthEntries();
   const [formOpen, setFormOpen] = useState(false);
+  const { t } = useTranslation();
 
   const todayEntries = entries.filter((e) => {
     const entryDate = new Date(e.entry_date).toDateString();
     return entryDate === new Date().toDateString();
   });
+
+  function getGreeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) return t.home.greeting.morning;
+    if (hour < 18) return t.home.greeting.afternoon;
+    return t.home.greeting.evening;
+  }
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -26,8 +34,8 @@ export default function HomePage() {
         </h1>
         <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>
           {todayEntries.length === 0
-            ? 'Ainda sem registros hoje. Como você está?'
-            : `${todayEntries.length} registro${todayEntries.length > 1 ? 's' : ''} hoje`}
+            ? t.home.noEntriesToday
+            : t.home.entriesToday(todayEntries.length)}
         </p>
       </div>
 
@@ -45,7 +53,7 @@ export default function HomePage() {
             <Plus className="w-5 h-5" style={{ color: 'var(--primary)' }} />
           </div>
           <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
-            Registrar
+            {t.home.register}
           </span>
         </button>
 
@@ -61,7 +69,7 @@ export default function HomePage() {
             <ClipboardList className="w-5 h-5" style={{ color: 'var(--info)' }} />
           </div>
           <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
-            Relatório
+            {t.home.report}
           </span>
         </Link>
 
@@ -77,7 +85,7 @@ export default function HomePage() {
             <Pill className="w-5 h-5" style={{ color: 'var(--warning)' }} />
           </div>
           <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
-            Medicamentos
+            {t.home.medications}
           </span>
         </Link>
 
@@ -93,7 +101,7 @@ export default function HomePage() {
             <Activity className="w-5 h-5" style={{ color: 'var(--success)' }} />
           </div>
           <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
-            Evolução
+            {t.home.evolution}
           </span>
         </Link>
       </div>
@@ -101,7 +109,7 @@ export default function HomePage() {
       {/* Feed */}
       <div>
         <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--text)' }}>
-          Seus registros
+          {t.home.yourEntries}
         </h2>
 
         {loading ? (
@@ -122,10 +130,10 @@ export default function HomePage() {
               <Heart className="w-8 h-8" style={{ color: 'var(--primary)' }} />
             </div>
             <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--text)' }}>
-              Seu diário está vazio
+              {t.home.emptyTitle}
             </h3>
             <p className="text-sm mb-5" style={{ color: 'var(--muted)' }}>
-              Comece registrando como você está se sentindo hoje.
+              {t.home.emptyDescription}
             </p>
             <button
               onClick={() => setFormOpen(true)}
@@ -135,7 +143,7 @@ export default function HomePage() {
                 boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)',
               }}
             >
-              <Plus className="w-4 h-4" /> Primeiro registro
+              <Plus className="w-4 h-4" /> {t.home.firstEntry}
             </button>
           </div>
         ) : (

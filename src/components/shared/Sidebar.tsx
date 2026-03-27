@@ -9,16 +9,7 @@ import {
   ClipboardList, Settings, LogOut
 } from 'lucide-react';
 import { getInitials } from '@/lib/utils';
-
-const NAV_ITEMS = [
-  { href: '/home', label: 'Home', icon: Home },
-  { href: '/dashboard', label: 'Evolução', icon: BarChart3 },
-  { href: '/medications', label: 'Medicamentos', icon: Pill },
-  { href: '/exams', label: 'Exames', icon: FileText },
-  { href: '/appointments', label: 'Consultas', icon: Calendar },
-  { href: '/reports', label: 'Relatórios', icon: ClipboardList },
-  { href: '/settings', label: 'Configurações', icon: Settings },
-];
+import { useTranslation } from '@/lib/i18n';
 
 interface SidebarProps {
   userName: string;
@@ -29,6 +20,17 @@ export function Sidebar({ userName, avatarUrl }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
+  const { t } = useTranslation();
+
+  const NAV_ITEMS = [
+    { href: '/home', label: t.nav.home, icon: Home },
+    { href: '/dashboard', label: t.nav.dashboard, icon: BarChart3 },
+    { href: '/medications', label: t.nav.medications, icon: Pill },
+    { href: '/exams', label: t.nav.exams, icon: FileText },
+    { href: '/appointments', label: t.nav.appointments, icon: Calendar },
+    { href: '/reports', label: t.nav.reports, icon: ClipboardList },
+    { href: '/settings', label: t.nav.settings, icon: Settings },
+  ];
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -55,7 +57,7 @@ export function Sidebar({ userName, avatarUrl }: SidebarProps) {
         <div>
           <h1 className="text-lg font-bold gradient-text">VitaLog</h1>
           <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
-            Diário de Saúde
+            {t.nav.healthDiary}
           </p>
         </div>
       </div>
@@ -109,7 +111,7 @@ export function Sidebar({ userName, avatarUrl }: SidebarProps) {
               {userName}
             </p>
             <p className="text-[11px]" style={{ color: 'var(--muted)' }}>
-              Pro · 14 dias restantes
+              {t.nav.proTrialDays}
             </p>
           </div>
         </div>
@@ -118,7 +120,7 @@ export function Sidebar({ userName, avatarUrl }: SidebarProps) {
           className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-sm transition-all cursor-pointer"
           style={{ color: 'var(--muted)' }}
         >
-          <LogOut className="w-4 h-4" /> Sair
+          <LogOut className="w-4 h-4" /> {t.nav.logout}
         </button>
       </div>
     </aside>

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Heart, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
+  const { t } = useTranslation();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -27,7 +29,7 @@ export default function LoginPage() {
 
     if (error) {
       setError(error.message === 'Invalid login credentials'
-        ? 'Email ou senha incorretos.'
+        ? t.login.invalidCredentials
         : error.message
       );
       setLoading(false);
@@ -64,10 +66,10 @@ export default function LoginPage() {
           <Heart className="w-8 h-8 text-white" strokeWidth={2.5} />
         </div>
         <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>
-          Bem-vindo de volta
+          {t.login.welcomeBack}
         </h1>
         <p className="mt-1" style={{ color: 'var(--muted)' }}>
-          Entre na sua conta do VitaLog
+          {t.login.subtitle}
         </p>
       </div>
 
@@ -98,13 +100,13 @@ export default function LoginPage() {
             <path d="M5.84 14.1a6.94 6.94 0 0 1 0-4.24V7.02H2.18A11.96 11.96 0 0 0 0 12c0 1.94.46 3.77 1.28 5.4l3.56-2.77-.01-.53z" fill="#FBBC05"/>
             <path d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.09 14.97 0 12 0 7.7 0 3.99 2.47 2.18 6.07l3.66 2.84c.87-2.6 3.3-4.16 6.16-4.16z" fill="#EA4335"/>
           </svg>
-          Entrar com Google
+          {t.login.googleLogin}
         </button>
 
         {/* Divider */}
         <div className="flex items-center gap-4 my-6">
           <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
-          <span className="text-xs font-medium" style={{ color: 'var(--muted)' }}>ou</span>
+          <span className="text-xs font-medium" style={{ color: 'var(--muted)' }}>{t.login.or}</span>
           <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
         </div>
 
@@ -121,7 +123,7 @@ export default function LoginPage() {
 
           <div>
             <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-              Email
+              {t.login.email}
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--muted-light)' }} />
@@ -130,7 +132,7 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
+                placeholder={t.login.emailPlaceholder}
                 required
                 className="w-full py-3 pl-11 pr-4 rounded-xl text-sm transition-all duration-200 outline-none"
                 style={{
@@ -144,7 +146,7 @@ export default function LoginPage() {
 
           <div>
             <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-              Senha
+              {t.login.password}
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--muted-light)' }} />
@@ -185,7 +187,7 @@ export default function LoginPage() {
             {loading ? (
               <Loader2 className="w-5 h-5 mx-auto animate-spin" />
             ) : (
-              'Entrar'
+              t.login.login
             )}
           </button>
         </form>
@@ -193,13 +195,13 @@ export default function LoginPage() {
 
       {/* Footer link */}
       <p className="text-center mt-6 text-sm" style={{ color: 'var(--muted)' }}>
-        Não tem conta?{' '}
+        {t.login.noAccount}{' '}
         <Link
           href="/signup"
           className="font-semibold transition-colors hover:underline"
           style={{ color: 'var(--primary)' }}
         >
-          Criar conta grátis
+          {t.login.createFree}
         </Link>
       </p>
     </div>

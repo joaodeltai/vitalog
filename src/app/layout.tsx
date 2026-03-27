@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "../globals.css";
 import { ToastProvider } from "@/components/shared/Toast";
 import { ServiceWorkerRegistrar } from "@/components/shared/ServiceWorkerRegistrar";
+import { LanguageProvider } from "@/lib/i18n";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,9 +41,11 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
       <body className="min-h-full flex flex-col font-sans antialiased">
-        <ToastProvider>
-          {children}
-        </ToastProvider>
+        <LanguageProvider>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </LanguageProvider>
         <ServiceWorkerRegistrar />
       </body>
     </html>

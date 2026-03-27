@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Heart, Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n';
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState('');
@@ -15,6 +16,7 @@ export default function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
+  const { t } = useTranslation();
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
@@ -22,7 +24,7 @@ export default function SignupPage() {
     setError(null);
 
     if (password.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres.');
+      setError(t.signup.passwordTooShort);
       setLoading(false);
       return;
     }
@@ -73,10 +75,10 @@ export default function SignupPage() {
           <Heart className="w-8 h-8 text-white" strokeWidth={2.5} />
         </div>
         <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>
-          Crie sua conta
+          {t.signup.createAccount}
         </h1>
         <p className="mt-1" style={{ color: 'var(--muted)' }}>
-          14 dias grátis para experimentar tudo
+          {t.signup.subtitle}
         </p>
       </div>
 
@@ -107,13 +109,13 @@ export default function SignupPage() {
             <path d="M5.84 14.1a6.94 6.94 0 0 1 0-4.24V7.02H2.18A11.96 11.96 0 0 0 0 12c0 1.94.46 3.77 1.28 5.4l3.56-2.77-.01-.53z" fill="#FBBC05"/>
             <path d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.09 14.97 0 12 0 7.7 0 3.99 2.47 2.18 6.07l3.66 2.84c.87-2.6 3.3-4.16 6.16-4.16z" fill="#EA4335"/>
           </svg>
-          Continuar com Google
+          {t.signup.googleSignup}
         </button>
 
         {/* Divider */}
         <div className="flex items-center gap-4 my-6">
           <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
-          <span className="text-xs font-medium" style={{ color: 'var(--muted)' }}>ou</span>
+          <span className="text-xs font-medium" style={{ color: 'var(--muted)' }}>{t.signup.or}</span>
           <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
         </div>
 
@@ -130,7 +132,7 @@ export default function SignupPage() {
 
           <div>
             <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-              Nome completo
+              {t.signup.fullName}
             </label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--muted-light)' }} />
@@ -139,7 +141,7 @@ export default function SignupPage() {
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="Seu nome"
+                placeholder={t.signup.fullNamePlaceholder}
                 required
                 className="w-full py-3 pl-11 pr-4 rounded-xl text-sm transition-all duration-200 outline-none"
                 style={{
@@ -153,7 +155,7 @@ export default function SignupPage() {
 
           <div>
             <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-              Email
+              {t.signup.email}
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--muted-light)' }} />
@@ -162,7 +164,7 @@ export default function SignupPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
+                placeholder={t.signup.emailPlaceholder}
                 required
                 className="w-full py-3 pl-11 pr-4 rounded-xl text-sm transition-all duration-200 outline-none"
                 style={{
@@ -176,7 +178,7 @@ export default function SignupPage() {
 
           <div>
             <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-              Senha
+              {t.signup.password}
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--muted-light)' }} />
@@ -185,7 +187,7 @@ export default function SignupPage() {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres"
+                placeholder={t.signup.passwordPlaceholder}
                 required
                 minLength={6}
                 className="w-full py-3 pl-11 pr-12 rounded-xl text-sm transition-all duration-200 outline-none"
@@ -218,27 +220,27 @@ export default function SignupPage() {
             {loading ? (
               <Loader2 className="w-5 h-5 mx-auto animate-spin" />
             ) : (
-              'Começar grátis por 14 dias'
+              t.signup.startFree
             )}
           </button>
         </form>
 
         <p className="text-xs text-center mt-4" style={{ color: 'var(--muted)' }}>
-          Ao criar uma conta, você concorda com nossos{' '}
-          <a href="#" className="underline">Termos de Uso</a> e{' '}
-          <a href="#" className="underline">Política de Privacidade</a>.
+          {t.signup.terms}{' '}
+          <a href="#" className="underline">{t.signup.termsOfUse}</a> {t.signup.and}{' '}
+          <a href="#" className="underline">{t.signup.privacyPolicy}</a>.
         </p>
       </div>
 
       {/* Footer link */}
       <p className="text-center mt-6 text-sm" style={{ color: 'var(--muted)' }}>
-        Já tem conta?{' '}
+        {t.signup.hasAccount}{' '}
         <Link
           href="/login"
           className="font-semibold transition-colors hover:underline"
           style={{ color: 'var(--primary)' }}
         >
-          Fazer login
+          {t.signup.login}
         </Link>
       </p>
     </div>

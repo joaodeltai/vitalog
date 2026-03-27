@@ -3,17 +3,19 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, BarChart3, Pill, ClipboardList, Settings } from 'lucide-react';
-
-const MOBILE_NAV_ITEMS = [
-  { href: '/home', label: 'Home', icon: Home },
-  { href: '/dashboard', label: 'Evolução', icon: BarChart3 },
-  { href: '/medications', label: 'Remédios', icon: Pill },
-  { href: '/reports', label: 'Relatórios', icon: ClipboardList },
-  { href: '/settings', label: 'Config', icon: Settings },
-];
+import { useTranslation } from '@/lib/i18n';
 
 export function MobileNav() {
   const pathname = usePathname();
+  const { t } = useTranslation();
+
+  const MOBILE_NAV_ITEMS = [
+    { href: '/home', label: t.nav.home, icon: Home },
+    { href: '/dashboard', label: t.nav.dashboard, icon: BarChart3 },
+    { href: '/medications', label: t.nav.mobileRemedies, icon: Pill },
+    { href: '/reports', label: t.nav.reports, icon: ClipboardList },
+    { href: '/settings', label: t.nav.mobileConfig, icon: Settings },
+  ];
 
   return (
     <nav

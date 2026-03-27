@@ -7,102 +7,105 @@ import {
   Sparkles, FileText, TrendingUp, Clock, Zap, Lock,
   BarChart3, Users, Award
 } from 'lucide-react';
-
-const features = [
-  {
-    icon: Heart,
-    title: 'Registro diário',
-    description: 'Anote sintomas, humor e como se sente em suas próprias palavras. Simples como mandar uma mensagem.',
-    color: '#EF4444',
-    bg: 'rgba(239, 68, 68, 0.06)',
-    gradient: 'linear-gradient(135deg, #EF4444 0%, #F97316 100%)',
-  },
-  {
-    icon: Brain,
-    title: 'Análise com IA',
-    description: 'Nossa IA identifica padrões, categoriza sintomas e sugere intensidade automaticamente.',
-    color: '#8B5CF6',
-    bg: 'rgba(139, 92, 246, 0.06)',
-    gradient: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
-  },
-  {
-    icon: ClipboardList,
-    title: 'Relatórios médicos',
-    description: 'Gere relatórios completos em PDF para levar ao seu médico, com todo o histórico organizado.',
-    color: '#0D9488',
-    bg: 'rgba(13, 148, 136, 0.06)',
-    gradient: 'linear-gradient(135deg, #0D9488 0%, #06B6D4 100%)',
-  },
-  {
-    icon: Pill,
-    title: 'Controle de medicamentos',
-    description: 'Acompanhe doses, horários e nunca mais esqueça de tomar seu remédio.',
-    color: '#F59E0B',
-    bg: 'rgba(245, 158, 11, 0.06)',
-    gradient: 'linear-gradient(135deg, #F59E0B 0%, #EAB308 100%)',
-  },
-];
-
-const steps = [
-  {
-    number: '01',
-    icon: Smartphone,
-    title: 'Registre',
-    description: 'Descreva como está se sentindo em texto livre, como se fosse um diário.',
-  },
-  {
-    number: '02',
-    icon: Sparkles,
-    title: 'IA analisa',
-    description: 'A inteligência artificial categoriza, identifica padrões e mede intensidade.',
-  },
-  {
-    number: '03',
-    icon: FileText,
-    title: 'Gere o relatório',
-    description: 'Com um clique, exporte um PDF completo e organizado para seu médico.',
-  },
-];
-
-const stats = [
-  { value: '10k+', label: 'Registros criados' },
-  { value: '98%', label: 'Satisfação' },
-  { value: '2min', label: 'Tempo médio' },
-  { value: '4.9', label: 'Nota na App Store', icon: Star },
-];
-
-const testimonials = [
-  {
-    name: 'Marina S.',
-    role: 'Paciente crônica',
-    text: 'Finalmente consigo explicar pro meu médico tudo que sinto entre as consultas. O relatório em PDF é um diferencial enorme.',
-    avatar: 'M',
-    color: '#EC4899',
-  },
-  {
-    name: 'Dr. Carlos R.',
-    role: 'Clínico geral',
-    text: 'Recomendo para todos os meus pacientes. Os relatórios chegam organizados e me ajudam a tomar decisões mais rápidas.',
-    avatar: 'C',
-    color: '#3B82F6',
-  },
-  {
-    name: 'Ana Paula M.',
-    role: 'Mãe de 2 filhos',
-    text: 'Uso para acompanhar a saúde da família toda. Simples, rápido e me dá segurança de não esquecer nada.',
-    avatar: 'A',
-    color: '#8B5CF6',
-  },
-];
-
-const extraFeatures = [
-  { icon: Shield, text: 'Dados criptografados e protegidos' },
-  { icon: Zap, text: 'Respostas da IA em segundos' },
-  { icon: Clock, text: 'Histórico completo sempre acessível' },
-  { icon: Lock, text: 'Privacidade total — só você tem acesso' },
-];
+import { useTranslation } from '@/lib/i18n';
 
 export default function LandingPage() {
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      icon: Heart,
+      title: t.landing.features.dailyLog,
+      description: t.landing.features.dailyLogDesc,
+      color: '#EF4444',
+      bg: 'rgba(239, 68, 68, 0.06)',
+      gradient: 'linear-gradient(135deg, #EF4444 0%, #F97316 100%)',
+    },
+    {
+      icon: Brain,
+      title: t.landing.features.aiAnalysis,
+      description: t.landing.features.aiAnalysisDesc,
+      color: '#8B5CF6',
+      bg: 'rgba(139, 92, 246, 0.06)',
+      gradient: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+    },
+    {
+      icon: ClipboardList,
+      title: t.landing.features.medReports,
+      description: t.landing.features.medReportsDesc,
+      color: '#0D9488',
+      bg: 'rgba(13, 148, 136, 0.06)',
+      gradient: 'linear-gradient(135deg, #0D9488 0%, #06B6D4 100%)',
+    },
+    {
+      icon: Pill,
+      title: t.landing.features.medControl,
+      description: t.landing.features.medControlDesc,
+      color: '#F59E0B',
+      bg: 'rgba(245, 158, 11, 0.06)',
+      gradient: 'linear-gradient(135deg, #F59E0B 0%, #EAB308 100%)',
+    },
+  ];
+
+  const steps = [
+    {
+      number: '01',
+      icon: Smartphone,
+      title: t.landing.howItWorks.step1Title,
+      description: t.landing.howItWorks.step1Desc,
+    },
+    {
+      number: '02',
+      icon: Sparkles,
+      title: t.landing.howItWorks.step2Title,
+      description: t.landing.howItWorks.step2Desc,
+    },
+    {
+      number: '03',
+      icon: FileText,
+      title: t.landing.howItWorks.step3Title,
+      description: t.landing.howItWorks.step3Desc,
+    },
+  ];
+
+  const stats = [
+    { value: '10k+', label: t.landing.stats.created },
+    { value: '98%', label: t.landing.stats.satisfaction },
+    { value: '2min', label: t.landing.stats.avgTime },
+    { value: '4.9', label: t.landing.stats.appRating, icon: Star },
+  ];
+
+  const testimonials = [
+    {
+      name: t.landing.testimonials.t1.name,
+      role: t.landing.testimonials.t1.role,
+      text: t.landing.testimonials.t1.text,
+      avatar: 'M',
+      color: '#EC4899',
+    },
+    {
+      name: t.landing.testimonials.t2.name,
+      role: t.landing.testimonials.t2.role,
+      text: t.landing.testimonials.t2.text,
+      avatar: 'C',
+      color: '#3B82F6',
+    },
+    {
+      name: t.landing.testimonials.t3.name,
+      role: t.landing.testimonials.t3.role,
+      text: t.landing.testimonials.t3.text,
+      avatar: 'A',
+      color: '#8B5CF6',
+    },
+  ];
+
+  const extraFeatures = [
+    { icon: Shield, text: t.landing.features.extras.encrypted },
+    { icon: Zap, text: t.landing.features.extras.fastAI },
+    { icon: Clock, text: t.landing.features.extras.fullHistory },
+    { icon: Lock, text: t.landing.features.extras.privacy },
+  ];
+
   return (
     <div style={{ background: 'var(--background)' }} className="overflow-x-hidden">
       {/* Header */}
@@ -124,13 +127,13 @@ export default function LandingPage() {
           </Link>
           <nav className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-sm font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
-              Recursos
+              {t.landing.header.features}
             </a>
             <a href="#how-it-works" className="text-sm font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
-              Como funciona
+              {t.landing.header.howItWorks}
             </a>
             <a href="#pricing" className="text-sm font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
-              Planos
+              {t.landing.header.plans}
             </a>
           </nav>
           <div className="flex items-center gap-3">
@@ -139,7 +142,7 @@ export default function LandingPage() {
               className="text-sm font-medium px-4 py-2 rounded-xl transition-all hover:bg-[rgba(13,148,136,0.06)]"
               style={{ color: 'var(--primary)' }}
             >
-              Entrar
+              {t.landing.header.login}
             </Link>
             <Link
               href="/signup"
@@ -149,7 +152,7 @@ export default function LandingPage() {
                 boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)',
               }}
             >
-              Criar conta
+              {t.landing.header.createAccount}
             </Link>
           </div>
         </div>
@@ -157,7 +160,6 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="relative px-4 sm:px-6 pt-20 pb-24 md:pt-32 md:pb-36 overflow-hidden">
-        {/* Decorative blobs */}
         <div
           className="absolute -top-24 -right-24 w-96 h-96 animate-blob opacity-20"
           style={{ background: 'linear-gradient(135deg, var(--accent), var(--primary-light))', filter: 'blur(80px)' }}
@@ -177,14 +179,14 @@ export default function LandingPage() {
             }}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            Seu diário de saúde pessoal com IA
+            {t.landing.hero.badge}
           </div>
 
           <h1
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight mb-6 animate-reveal-up"
             style={{ color: 'var(--text)', animationDelay: '0.1s' }}
           >
-            Chegue na consulta com{' '}
+            {t.landing.hero.titlePart1}
             <span
               className="animate-gradient-shift"
               style={{
@@ -195,7 +197,7 @@ export default function LandingPage() {
                 backgroundClip: 'text',
               }}
             >
-              tudo que o médico precisa
+              {t.landing.hero.titleHighlight}
             </span>
           </h1>
 
@@ -203,8 +205,7 @@ export default function LandingPage() {
             className="text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto mb-10 leading-relaxed animate-reveal-up"
             style={{ color: 'var(--muted)', animationDelay: '0.2s' }}
           >
-            Registre sintomas no dia a dia e transforme em relatórios médicos completos.
-            Sem esquecer nada, sem enrolação.
+            {t.landing.hero.subtitle}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-reveal-up" style={{ animationDelay: '0.3s' }}>
@@ -216,11 +217,11 @@ export default function LandingPage() {
                 boxShadow: '0 8px 32px rgba(13, 148, 136, 0.4)',
               }}
             >
-              Começar grátis
+              {t.landing.hero.cta}
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <p className="text-sm" style={{ color: 'var(--muted)' }}>
-              14 dias grátis &middot; Sem cartão de crédito
+              {t.landing.hero.trial}
             </p>
           </div>
 
@@ -254,13 +255,13 @@ export default function LandingPage() {
               className="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full"
               style={{ color: 'var(--primary)', background: 'rgba(13, 148, 136, 0.06)' }}
             >
-              Recursos
+              {t.landing.features.sectionLabel}
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4" style={{ color: 'var(--text)' }}>
-              Tudo para cuidar da sua saúde
+              {t.landing.features.sectionTitle}
             </h2>
             <p className="text-base md:text-lg max-w-xl mx-auto" style={{ color: 'var(--muted)' }}>
-              Ferramentas inteligentes que simplificam seu dia a dia e melhoram a comunicação com seu médico.
+              {t.landing.features.sectionSubtitle}
             </p>
           </div>
 
@@ -311,20 +312,19 @@ export default function LandingPage() {
               className="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full"
               style={{ color: 'var(--primary)', background: 'rgba(13, 148, 136, 0.06)' }}
             >
-              Como funciona
+              {t.landing.howItWorks.sectionLabel}
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4" style={{ color: 'var(--text)' }}>
-              Simples em 3 passos
+              {t.landing.howItWorks.sectionTitle}
             </h2>
             <p className="text-base md:text-lg max-w-xl mx-auto" style={{ color: 'var(--muted)' }}>
-              Do registro ao relatório médico em minutos, não horas.
+              {t.landing.howItWorks.sectionSubtitle}
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 md:gap-8">
             {steps.map((step, i) => (
               <div key={step.number} className="relative text-center group">
-                {/* Connector line (hidden on mobile, shown between cards on desktop) */}
                 {i < steps.length - 1 && (
                   <div
                     className="hidden md:block absolute top-10 left-[60%] w-[80%] h-[2px]"
@@ -345,7 +345,7 @@ export default function LandingPage() {
                   className="text-xs font-bold uppercase tracking-widest"
                   style={{ color: 'var(--accent)' }}
                 >
-                  Passo {step.number}
+                  {t.landing.howItWorks.step} {step.number}
                 </span>
                 <h3 className="text-xl font-bold mt-2 mb-2" style={{ color: 'var(--text)' }}>
                   {step.title}
@@ -367,17 +367,17 @@ export default function LandingPage() {
               className="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full"
               style={{ color: 'var(--primary)', background: 'rgba(13, 148, 136, 0.06)' }}
             >
-              Depoimentos
+              {t.landing.testimonials.sectionLabel}
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4" style={{ color: 'var(--text)' }}>
-              Quem usa, recomenda
+              {t.landing.testimonials.sectionTitle}
             </h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
+            {testimonials.map((tst, i) => (
               <div
-                key={t.name}
+                key={tst.name}
                 className="hover-lift p-6 rounded-2xl animate-fade-in"
                 style={{
                   background: 'var(--background)',
@@ -391,18 +391,18 @@ export default function LandingPage() {
                   ))}
                 </div>
                 <p className="text-sm leading-relaxed mb-5" style={{ color: 'var(--text-secondary)' }}>
-                  &ldquo;{t.text}&rdquo;
+                  &ldquo;{tst.text}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                    style={{ background: t.color }}
+                    style={{ background: tst.color }}
                   >
-                    {t.avatar}
+                    {tst.avatar}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{t.name}</p>
-                    <p className="text-xs" style={{ color: 'var(--muted)' }}>{t.role}</p>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{tst.name}</p>
+                    <p className="text-xs" style={{ color: 'var(--muted)' }}>{tst.role}</p>
                   </div>
                 </div>
               </div>
@@ -419,13 +419,13 @@ export default function LandingPage() {
               className="inline-block text-xs font-bold uppercase tracking-widest mb-3 px-3 py-1 rounded-full"
               style={{ color: 'var(--primary)', background: 'rgba(13, 148, 136, 0.06)' }}
             >
-              Planos
+              {t.landing.pricing.sectionLabel}
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4" style={{ color: 'var(--text)' }}>
-              Simples, transparente, justo
+              {t.landing.pricing.sectionTitle}
             </h2>
             <p className="text-base md:text-lg max-w-xl mx-auto" style={{ color: 'var(--muted)' }}>
-              Comece grátis por 14 dias. Sem surpresas. Cancele quando quiser.
+              {t.landing.pricing.sectionSubtitle}
             </p>
           </div>
 
@@ -433,15 +433,15 @@ export default function LandingPage() {
             {/* Monthly */}
             <div className="hover-lift p-7 rounded-2xl" style={{ background: 'var(--surface)', border: '1px solid var(--border-light)' }}>
               <div className="mb-6">
-                <h3 className="text-lg font-bold mb-1" style={{ color: 'var(--text)' }}>Pro Mensal</h3>
-                <p className="text-xs" style={{ color: 'var(--muted)' }}>Para quem quer flexibilidade</p>
+                <h3 className="text-lg font-bold mb-1" style={{ color: 'var(--text)' }}>{t.landing.pricing.monthly}</h3>
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>{t.landing.pricing.monthlyDesc}</p>
               </div>
               <div className="flex items-baseline gap-1 mb-6">
-                <span className="text-4xl font-extrabold" style={{ color: 'var(--text)' }}>R$29</span>
-                <span className="text-sm font-medium" style={{ color: 'var(--muted)' }}>/mês</span>
+                <span className="text-4xl font-extrabold" style={{ color: 'var(--text)' }}>{t.landing.pricing.monthlyPrice}</span>
+                <span className="text-sm font-medium" style={{ color: 'var(--muted)' }}>{t.landing.pricing.monthlyPeriod}</span>
               </div>
               <ul className="space-y-3 mb-7">
-                {['Registros ilimitados', 'Análise com IA', 'Relatórios em PDF', 'Controle de medicamentos'].map((item) => (
+                {t.landing.pricing.monthlyFeatures.map((item) => (
                   <li key={item} className="flex items-center gap-2.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
                     <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
                       <Check className="w-3 h-3" style={{ color: 'var(--success)' }} />
@@ -459,7 +459,7 @@ export default function LandingPage() {
                   background: 'var(--surface)',
                 }}
               >
-                Começar grátis
+                {t.landing.pricing.startFree}
               </Link>
             </div>
 
@@ -476,21 +476,21 @@ export default function LandingPage() {
                 className="absolute -top-3 right-5 px-3.5 py-1 rounded-full text-xs font-bold text-white"
                 style={{ background: 'linear-gradient(135deg, var(--success), #059669)' }}
               >
-                2 meses grátis
+                {t.landing.pricing.freeMonths}
               </span>
               <div className="mb-6">
-                <h3 className="text-lg font-bold mb-1" style={{ color: 'var(--text)' }}>Pro Anual</h3>
-                <p className="text-xs" style={{ color: 'var(--muted)' }}>Melhor custo-benefício</p>
+                <h3 className="text-lg font-bold mb-1" style={{ color: 'var(--text)' }}>{t.landing.pricing.annual}</h3>
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>{t.landing.pricing.annualDesc}</p>
               </div>
               <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-4xl font-extrabold" style={{ color: 'var(--text)' }}>R$199</span>
-                <span className="text-sm font-medium" style={{ color: 'var(--muted)' }}>/ano</span>
+                <span className="text-4xl font-extrabold" style={{ color: 'var(--text)' }}>{t.landing.pricing.annualPrice}</span>
+                <span className="text-sm font-medium" style={{ color: 'var(--muted)' }}>{t.landing.pricing.annualPeriod}</span>
               </div>
               <p className="text-xs mb-6" style={{ color: 'var(--success)' }}>
-                Equivale a R$16,58/mês — economize R$149
+                {t.landing.pricing.annualSavings}
               </p>
               <ul className="space-y-3 mb-7">
-                {['Tudo do plano mensal', 'Prioridade no suporte', 'Exportação completa', 'Economia de R$149/ano'].map((item) => (
+                {t.landing.pricing.annualFeatures.map((item) => (
                   <li key={item} className="flex items-center gap-2.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
                     <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
                       <Check className="w-3 h-3" style={{ color: 'var(--success)' }} />
@@ -507,7 +507,7 @@ export default function LandingPage() {
                   boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)',
                 }}
               >
-                Começar grátis
+                {t.landing.pricing.startFree}
               </Link>
             </div>
           </div>
@@ -523,7 +523,6 @@ export default function LandingPage() {
             backgroundSize: '200% 200%',
           }}
         />
-        {/* Decorative elements */}
         <div
           className="absolute top-0 right-0 w-96 h-96 animate-blob opacity-20"
           style={{ background: 'var(--accent)', filter: 'blur(80px)', animationDelay: '-2s' }}
@@ -535,10 +534,10 @@ export default function LandingPage() {
 
         <div className="max-w-2xl mx-auto text-center relative z-10">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
-            Comece a cuidar da sua saúde hoje
+            {t.landing.cta.title}
           </h2>
           <p className="text-base md:text-lg text-white/75 mb-10 max-w-lg mx-auto">
-            Crie sua conta em segundos e ganhe 14 dias grátis. Junte-se a milhares de pessoas que já transformaram sua relação com a saúde.
+            {t.landing.cta.subtitle}
           </p>
           <Link
             href="/signup"
@@ -549,7 +548,7 @@ export default function LandingPage() {
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
             }}
           >
-            Criar conta grátis
+            {t.landing.cta.button}
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -574,17 +573,17 @@ export default function LandingPage() {
             </div>
             <div className="flex items-center gap-6">
               <a href="#features" className="text-xs font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
-                Recursos
+                {t.landing.header.features}
               </a>
               <a href="#how-it-works" className="text-xs font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
-                Como funciona
+                {t.landing.header.howItWorks}
               </a>
               <a href="#pricing" className="text-xs font-medium transition-colors hover:opacity-80" style={{ color: 'var(--muted)' }}>
-                Planos
+                {t.landing.header.plans}
               </a>
             </div>
             <p className="text-xs" style={{ color: 'var(--muted-light)' }}>
-              &copy; 2025 VitaLog. Todos os direitos reservados.
+              {t.landing.footer.copyright}
             </p>
           </div>
         </div>

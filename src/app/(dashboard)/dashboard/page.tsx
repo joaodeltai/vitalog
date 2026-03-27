@@ -7,19 +7,22 @@ import { SYMPTOM_CATEGORIES } from '@/types';
 import { BarChart3, TrendingUp, Calendar } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { format, subDays, startOfDay } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-
-const PERIODS = [
-  { label: '7 dias', days: 7 },
-  { label: '30 dias', days: 30 },
-  { label: '90 dias', days: 90 },
-];
+import { ptBR, enUS } from 'date-fns/locale';
+import { useTranslation } from '@/lib/i18n';
 
 export default function DashboardPage() {
   const [entries, setEntries] = useState<HealthEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState(30);
   const supabase = useMemo(() => createClient(), []);
+  const { t, language } = useTranslation();
+  const dateFnsLocale = language === 'pt' ? ptBR : enUS;
+
+  const PERIODS = [
+    { label: t.dashboard.periods['7'], days: 7 },
+    { label: t.dashboard.periods['30'], days: 30 },
+    { label: t.dashboard.periods['90'], days: 90 },
+  ];
 
   const fetchEntries = useCallback(async () => {
     setLoading(true);
@@ -60,7 +63,7 @@ export default function DashboardPage() {
 
     return Object.values(days).map((d) => ({
       ...d,
-      label: format(new Date(d.date), 'dd/MM', { locale: ptBR }),
+      label: format(new Date(d.date), 'dd/MM', { locale: dateFnsLocale }),
       avgIntensity: Math.round(d.avgIntensity * 10) / 10,
     }));
   })();
@@ -84,12 +87,18 @@ export default function DashboardPage() {
     ? Math.round((entries.reduce((sum, e) => sum + (e.intensity || 0), 0) / entries.length) * 10) / 10
     : 0;
 
+  // Get translated category label
+  function getCategoryLabel(value: string): string {
+    const key = value as keyof typeof t.symptomCategories;
+    return t.symptomCategories[key] || value;
+  }
+
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>Evolução</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>Acompanhe seus padrões de saúde</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>{t.dashboard.title}</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>{t.dashboard.subtitle}</p>
         </div>
         <div className="flex gap-1 p-1 rounded-xl" style={{ background: 'var(--border-light)' }}>
           {PERIODS.map((p) => (
@@ -112,15 +121,15 @@ export default function DashboardPage() {
       {/* Stats cards */}
       <div className="grid grid-cols-3 gap-3 mb-6">
         <div className="p-4 rounded-2xl" style={{ background: 'var(--surface)', border: '1px solid var(--border-light)' }}>
-          <p className="text-xs font-medium mb-1" style={{ color: 'var(--muted)' }}>Total registros</p>
+          <p className="text-xs font-medium mb-1" style={{ color: 'var(--muted)' }}>{t.dashboard.totalEntries}</p>
           <p className="text-2xl font-bold" style={{ color: 'var(--text)' }}>{entries.length}</p>
         </div>
         <div className="p-4 rounded-2xl" style={{ background: 'var(--surface)', border: '1px solid var(--border-light)' }}>
-          <p className="text-xs font-medium mb-1" style={{ color: 'var(--muted)' }}>Intensidade média</p>
+          <p className="text-xs font-medium mb-1" style={{ color: 'var(--muted)' }}>{t.dashboard.avgIntensity}</p>
           <p className="text-2xl font-bold" style={{ color: 'var(--text)' }}>{avgIntensity || '—'}</p>
         </div>
         <div className="p-4 rounded-2xl" style={{ background: 'var(--surface)', border: '1px solid var(--border-light)' }}>
-          <p className="text-xs font-medium mb-1" style={{ color: 'var(--muted)' }}>Categorias</p>
+          <p className="text-xs font-medium mb-1" style={{ color: 'var(--muted)' }}>{t.dashboard.categories}</p>
           <p className="text-2xl font-bold" style={{ color: 'var(--text)' }}>{categoryStats.length}</p>
         </div>
       </div>
@@ -133,7 +142,7 @@ export default function DashboardPage() {
           <div className="p-5 rounded-2xl mb-6" style={{ background: 'var(--surface)', border: '1px solid var(--border-light)' }}>
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5" style={{ color: 'var(--primary)' }} />
-              <h3 className="font-semibold text-sm" style={{ color: 'var(--text)' }}>Intensidade ao longo do tempo</h3>
+              <h3 className="font-semibold text-sm" style={{ color: 'var(--text)' }}>{t.dashboard.intensityOverTime}</h3>
             </div>
             {entries.length > 0 ? (
               <ResponsiveContainer width="100%" height={220}>
@@ -155,14 +164,14 @@ export default function DashboardPage() {
                       fontSize: '12px',
                       boxShadow: '0 4px 12px rgba(13, 148, 136, 0.1)',
                     }}
-                    formatter={(value: any) => [value, 'Intensidade']}
+                    formatter={(value: any) => [value, t.dashboard.tooltipIntensity]}
                   />
                   <Area type="monotone" dataKey="avgIntensity" stroke="#0D9488" strokeWidth={2} fill="url(#intensityGradient)" />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
               <div className="flex items-center justify-center h-48" style={{ color: 'var(--muted)' }}>
-                <p className="text-sm">Sem dados nesse período</p>
+                <p className="text-sm">{t.dashboard.noData}</p>
               </div>
             )}
           </div>
@@ -171,7 +180,7 @@ export default function DashboardPage() {
           <div className="p-5 rounded-2xl mb-6" style={{ background: 'var(--surface)', border: '1px solid var(--border-light)' }}>
             <div className="flex items-center gap-2 mb-4">
               <BarChart3 className="w-5 h-5" style={{ color: 'var(--accent)' }} />
-              <h3 className="font-semibold text-sm" style={{ color: 'var(--text)' }}>Registros por dia</h3>
+              <h3 className="font-semibold text-sm" style={{ color: 'var(--text)' }}>{t.dashboard.entriesPerDay}</h3>
             </div>
             {entries.length > 0 ? (
               <ResponsiveContainer width="100%" height={180}>
@@ -185,13 +194,13 @@ export default function DashboardPage() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#E8F5F3" />
                   <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6B8E8B' }} tickLine={false} axisLine={false} interval={period > 30 ? 6 : period > 14 ? 2 : 0} />
                   <YAxis tick={{ fontSize: 11, fill: '#6B8E8B' }} tickLine={false} axisLine={false} width={30} allowDecimals={false} />
-                  <Tooltip contentStyle={{ background: '#FFFFFF', border: '1px solid #D1E8E5', borderRadius: '10px', fontSize: '12px' }} formatter={(value: any) => [value, 'Registros']} />
+                  <Tooltip contentStyle={{ background: '#FFFFFF', border: '1px solid #D1E8E5', borderRadius: '10px', fontSize: '12px' }} formatter={(value: any) => [value, t.dashboard.tooltipEntries]} />
                   <Area type="monotone" dataKey="count" stroke="#5EEAD4" strokeWidth={2} fill="url(#countGradient)" />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
               <div className="flex items-center justify-center h-44" style={{ color: 'var(--muted)' }}>
-                <p className="text-sm">Sem dados nesse período</p>
+                <p className="text-sm">{t.dashboard.noData}</p>
               </div>
             )}
           </div>
@@ -199,12 +208,12 @@ export default function DashboardPage() {
           {/* Category breakdown */}
           {categoryStats.length > 0 && (
             <div className="p-5 rounded-2xl" style={{ background: 'var(--surface)', border: '1px solid var(--border-light)' }}>
-              <h3 className="font-semibold text-sm mb-4" style={{ color: 'var(--text)' }}>Por categoria</h3>
+              <h3 className="font-semibold text-sm mb-4" style={{ color: 'var(--text)' }}>{t.dashboard.byCategory}</h3>
               <div className="space-y-3">
                 {categoryStats.map(({ category, count }) => (
                   <div key={category.value} className="flex items-center gap-3">
                     <span className="text-lg">{category.emoji}</span>
-                    <span className="text-sm font-medium flex-1" style={{ color: 'var(--text)' }}>{category.label}</span>
+                    <span className="text-sm font-medium flex-1" style={{ color: 'var(--text)' }}>{getCategoryLabel(category.value)}</span>
                     <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'var(--border-light)' }}>
                       <div
                         className="h-full rounded-full transition-all duration-500"

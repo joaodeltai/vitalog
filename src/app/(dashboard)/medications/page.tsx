@@ -8,6 +8,7 @@ import {
   Loader2, Calendar, Trash2
 } from 'lucide-react';
 import { useToast } from '@/components/shared/Toast';
+import { useTranslation } from '@/lib/i18n';
 
 export default function MedicationsPage() {
   const [medications, setMedications] = useState<Medication[]>([]);
@@ -20,6 +21,7 @@ export default function MedicationsPage() {
   const [saving, setSaving] = useState(false);
   const supabase = useMemo(() => createClient(), []);
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -58,7 +60,7 @@ export default function MedicationsPage() {
       setFormOpen(false);
       fetchData();
     } catch {
-      showToast('Erro ao salvar medicamento. Tente novamente.', 'error');
+      showToast(t.medications.errorSave, 'error');
     }
     setSaving(false);
   }
@@ -81,7 +83,7 @@ export default function MedicationsPage() {
       }
       fetchData();
     } catch {
-      showToast('Erro ao registrar dose. Tente novamente.', 'error');
+      showToast(t.medications.errorDose, 'error');
     }
   }
 
@@ -90,7 +92,7 @@ export default function MedicationsPage() {
       await supabase.from('medications').delete().eq('id', id);
       fetchData();
     } catch {
-      showToast('Erro ao excluir medicamento.', 'error');
+      showToast(t.medications.errorDelete, 'error');
     }
   }
 
@@ -99,7 +101,7 @@ export default function MedicationsPage() {
       await supabase.from('medications').update({ is_active: !currentActive }).eq('id', id);
       fetchData();
     } catch {
-      showToast('Erro ao atualizar medicamento.', 'error');
+      showToast(t.medications.errorUpdate, 'error');
     }
   }
 
@@ -110,9 +112,9 @@ export default function MedicationsPage() {
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>Medicamentos</h1>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>{t.medications.title}</h1>
           <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>
-            {activeMeds.length} ativo{activeMeds.length !== 1 ? 's' : ''}
+            {t.medications.active(activeMeds.length)}
           </p>
         </div>
         <button
@@ -123,25 +125,25 @@ export default function MedicationsPage() {
             boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)',
           }}
         >
-          <Plus className="w-4 h-4" /> Adicionar
+          <Plus className="w-4 h-4" /> {t.medications.add}
         </button>
       </div>
 
       {/* Add form */}
       {formOpen && (
         <div className="p-5 rounded-2xl mb-6 animate-scale-in" style={{ background: 'var(--surface)', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-md)' }}>
-          <h3 className="font-semibold mb-4" style={{ color: 'var(--text)' }}>Novo medicamento</h3>
+          <h3 className="font-semibold mb-4" style={{ color: 'var(--text)' }}>{t.medications.newMedication}</h3>
           <div className="space-y-3">
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Nome do medicamento" className="w-full py-3 px-4 rounded-xl text-sm outline-none" style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }} />
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder={t.medications.medNamePlaceholder} className="w-full py-3 px-4 rounded-xl text-sm outline-none" style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }} />
             <div className="grid grid-cols-2 gap-3">
-              <input type="text" value={dosage} onChange={(e) => setDosage(e.target.value)} placeholder="Dosagem (ex: 50mg)" className="w-full py-3 px-4 rounded-xl text-sm outline-none" style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }} />
-              <input type="text" value={frequency} onChange={(e) => setFrequency(e.target.value)} placeholder="Frequência (ex: 2x/dia)" className="w-full py-3 px-4 rounded-xl text-sm outline-none" style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }} />
+              <input type="text" value={dosage} onChange={(e) => setDosage(e.target.value)} placeholder={t.medications.dosagePlaceholder} className="w-full py-3 px-4 rounded-xl text-sm outline-none" style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }} />
+              <input type="text" value={frequency} onChange={(e) => setFrequency(e.target.value)} placeholder={t.medications.frequencyPlaceholder} className="w-full py-3 px-4 rounded-xl text-sm outline-none" style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }} />
             </div>
             <div className="flex gap-2">
               <button onClick={handleCreate} disabled={saving || !name.trim()} className="flex-1 py-2.5 rounded-xl text-white text-sm font-semibold cursor-pointer disabled:opacity-50 transition-all" style={{ background: 'var(--primary)' }}>
-                {saving ? <Loader2 className="w-4 h-4 mx-auto animate-spin" /> : 'Salvar'}
+                {saving ? <Loader2 className="w-4 h-4 mx-auto animate-spin" /> : t.medications.save}
               </button>
-              <button onClick={() => setFormOpen(false)} className="px-4 py-2.5 rounded-xl text-sm font-medium cursor-pointer" style={{ border: '1px solid var(--border)', color: 'var(--muted)' }}>Cancelar</button>
+              <button onClick={() => setFormOpen(false)} className="px-4 py-2.5 rounded-xl text-sm font-medium cursor-pointer" style={{ border: '1px solid var(--border)', color: 'var(--muted)' }}>{t.medications.cancel}</button>
             </div>
           </div>
         </div>
@@ -154,8 +156,8 @@ export default function MedicationsPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4" style={{ background: 'rgba(245, 158, 11, 0.1)' }}>
             <Pill className="w-8 h-8" style={{ color: 'var(--warning)' }} />
           </div>
-          <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--text)' }}>Nenhum medicamento</h3>
-          <p className="text-sm" style={{ color: 'var(--muted)' }}>Cadastre seus medicamentos para receber lembretes.</p>
+          <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--text)' }}>{t.medications.emptyTitle}</h3>
+          <p className="text-sm" style={{ color: 'var(--muted)' }}>{t.medications.emptyDescription}</p>
         </div>
       ) : (
         <>
@@ -176,8 +178,8 @@ export default function MedicationsPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => handleToggleActive(med.id, med.is_active)} className="p-1.5 rounded-lg cursor-pointer" style={{ color: 'var(--muted)' }} title="Desativar"><X className="w-4 h-4" /></button>
-                      <button onClick={() => handleDelete(med.id)} className="p-1.5 rounded-lg cursor-pointer" style={{ color: 'var(--danger)' }} title="Excluir"><Trash2 className="w-4 h-4" /></button>
+                      <button onClick={() => handleToggleActive(med.id, med.is_active)} className="p-1.5 rounded-lg cursor-pointer" style={{ color: 'var(--muted)' }} title={t.medications.deactivate}><X className="w-4 h-4" /></button>
+                      <button onClick={() => handleDelete(med.id)} className="p-1.5 rounded-lg cursor-pointer" style={{ color: 'var(--danger)' }} title={t.medications.delete}><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </div>
                 );
@@ -187,13 +189,13 @@ export default function MedicationsPage() {
 
           {inactiveMeds.length > 0 && (
             <div>
-              <h3 className="text-sm font-medium mb-3" style={{ color: 'var(--muted)' }}>Inativos</h3>
+              <h3 className="text-sm font-medium mb-3" style={{ color: 'var(--muted)' }}>{t.medications.inactive}</h3>
               <div className="space-y-2">
                 {inactiveMeds.map((med) => (
                   <div key={med.id} className="flex items-center gap-4 p-3 rounded-xl opacity-60" style={{ background: 'var(--surface)', border: '1px solid var(--border-light)' }}>
                     <Pill className="w-4 h-4" style={{ color: 'var(--muted)' }} />
                     <span className="text-sm flex-1" style={{ color: 'var(--muted)' }}>{med.name} {med.dosage && `· ${med.dosage}`}</span>
-                    <button onClick={() => handleToggleActive(med.id, med.is_active)} className="text-xs cursor-pointer" style={{ color: 'var(--primary)' }}>Reativar</button>
+                    <button onClick={() => handleToggleActive(med.id, med.is_active)} className="text-xs cursor-pointer" style={{ color: 'var(--primary)' }}>{t.medications.reactivate}</button>
                   </div>
                 ))}
               </div>

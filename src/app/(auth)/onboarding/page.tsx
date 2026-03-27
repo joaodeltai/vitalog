@@ -8,18 +8,14 @@ import {
   ChevronRight, ChevronLeft, Check, Loader2
 } from 'lucide-react';
 import { BLOOD_TYPES } from '@/types';
-
-const STEPS = [
-  { title: 'Seus dados básicos', subtitle: 'Informações para personalizar sua experiência' },
-  { title: 'Condições de saúde', subtitle: 'Nos ajuda a identificar padrões relevantes' },
-  { title: 'Medicamentos', subtitle: 'Configure seus lembretes (opcional)' },
-];
+import { useTranslation } from '@/lib/i18n';
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const { t } = useTranslation();
 
   // Step 1 data
   const [fullName, setFullName] = useState('');
@@ -81,7 +77,7 @@ export default function OnboardingPage() {
     <div className="animate-fade-in">
       {/* Progress bar */}
       <div className="flex items-center gap-2 mb-8">
-        {STEPS.map((_, i) => (
+        {t.onboarding.steps.map((_, i) => (
           <div
             key={i}
             className="flex-1 h-1.5 rounded-full transition-all duration-500"
@@ -103,10 +99,10 @@ export default function OnboardingPage() {
           <Heart className="w-7 h-7 text-white" strokeWidth={2.5} />
         </div>
         <h1 className="text-xl font-bold" style={{ color: 'var(--text)' }}>
-          {STEPS[step].title}
+          {t.onboarding.steps[step].title}
         </h1>
         <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>
-          {STEPS[step].subtitle}
+          {t.onboarding.steps[step].subtitle}
         </p>
       </div>
 
@@ -124,14 +120,14 @@ export default function OnboardingPage() {
           <div className="space-y-4 animate-fade-in">
             <div>
               <label className="flex items-center gap-2 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                <User className="w-4 h-4" /> Nome completo
+                <User className="w-4 h-4" /> {t.onboarding.fullName}
               </label>
               <input
                 id="onboarding-name"
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="Seu nome completo"
+                placeholder={t.onboarding.fullNamePlaceholder}
                 className="w-full py-3 px-4 rounded-xl text-sm outline-none transition-all"
                 style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }}
               />
@@ -139,7 +135,7 @@ export default function OnboardingPage() {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                <Calendar className="w-4 h-4" /> Data de nascimento
+                <Calendar className="w-4 h-4" /> {t.onboarding.dateOfBirth}
               </label>
               <input
                 id="onboarding-dob"
@@ -153,7 +149,7 @@ export default function OnboardingPage() {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                <Droplets className="w-4 h-4" /> Tipo sanguíneo
+                <Droplets className="w-4 h-4" /> {t.onboarding.bloodType}
               </label>
               <div className="grid grid-cols-4 gap-2">
                 {BLOOD_TYPES.map((bt) => (
@@ -181,31 +177,31 @@ export default function OnboardingPage() {
           <div className="space-y-4 animate-fade-in">
             <div>
               <label className="flex items-center gap-2 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                <ShieldAlert className="w-4 h-4" /> Condições crônicas
+                <ShieldAlert className="w-4 h-4" /> {t.onboarding.chronicConditions}
               </label>
               <textarea
                 id="onboarding-conditions"
                 value={conditions}
                 onChange={(e) => setConditions(e.target.value)}
-                placeholder="Ex: diabetes, hipertensão, ansiedade (separe por vírgula)"
+                placeholder={t.onboarding.chronicPlaceholder}
                 rows={3}
                 className="w-full py-3 px-4 rounded-xl text-sm outline-none transition-all resize-none"
                 style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }}
               />
               <p className="text-xs mt-1" style={{ color: 'var(--muted)' }}>
-                Separe várias condições por vírgula. Deixe vazio se não tiver.
+                {t.onboarding.chronicHint}
               </p>
             </div>
 
             <div>
               <label className="flex items-center gap-2 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                <ShieldAlert className="w-4 h-4" /> Alergias
+                <ShieldAlert className="w-4 h-4" /> {t.onboarding.allergies}
               </label>
               <textarea
                 id="onboarding-allergies"
                 value={allergies}
                 onChange={(e) => setAllergies(e.target.value)}
-                placeholder="Ex: dipirona, amoxicilina, frutos do mar"
+                placeholder={t.onboarding.allergiesPlaceholder}
                 rows={3}
                 className="w-full py-3 px-4 rounded-xl text-sm outline-none transition-all resize-none"
                 style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }}
@@ -221,19 +217,19 @@ export default function OnboardingPage() {
               className="p-3 rounded-xl text-sm"
               style={{ background: 'rgba(13, 148, 136, 0.06)', color: 'var(--text-secondary)' }}
             >
-              💡 Opcional — você pode cadastrar medicamentos depois também.
+              {t.onboarding.optional}
             </div>
 
             <div>
               <label className="flex items-center gap-2 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                <Pill className="w-4 h-4" /> Nome do medicamento
+                <Pill className="w-4 h-4" /> {t.onboarding.medName}
               </label>
               <input
                 id="onboarding-med-name"
                 type="text"
                 value={medName}
                 onChange={(e) => setMedName(e.target.value)}
-                placeholder="Ex: Losartana"
+                placeholder={t.onboarding.medNamePlaceholder}
                 className="w-full py-3 px-4 rounded-xl text-sm outline-none transition-all"
                 style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }}
               />
@@ -242,28 +238,28 @@ export default function OnboardingPage() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-sm font-medium mb-1.5 block" style={{ color: 'var(--text-secondary)' }}>
-                  Dosagem
+                  {t.onboarding.dosage}
                 </label>
                 <input
                   id="onboarding-med-dosage"
                   type="text"
                   value={medDosage}
                   onChange={(e) => setMedDosage(e.target.value)}
-                  placeholder="Ex: 50mg"
+                  placeholder={t.onboarding.dosagePlaceholder}
                   className="w-full py-3 px-4 rounded-xl text-sm outline-none transition-all"
                   style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }}
                 />
               </div>
               <div>
                 <label className="flex items-center gap-1 text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
-                  <Clock className="w-3.5 h-3.5" /> Frequência
+                  <Clock className="w-3.5 h-3.5" /> {t.onboarding.frequency}
                 </label>
                 <input
                   id="onboarding-med-frequency"
                   type="text"
                   value={medFrequency}
                   onChange={(e) => setMedFrequency(e.target.value)}
-                  placeholder="Ex: 2x ao dia"
+                  placeholder={t.onboarding.frequencyPlaceholder}
                   className="w-full py-3 px-4 rounded-xl text-sm outline-none transition-all"
                   style={{ border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }}
                 />
@@ -281,7 +277,7 @@ export default function OnboardingPage() {
               className="flex items-center gap-1 py-2.5 px-4 rounded-xl text-sm font-medium transition-all cursor-pointer"
               style={{ color: 'var(--muted)', border: '1px solid var(--border)' }}
             >
-              <ChevronLeft className="w-4 h-4" /> Voltar
+              <ChevronLeft className="w-4 h-4" /> {t.onboarding.back}
             </button>
           ) : (
             <div />
@@ -297,7 +293,7 @@ export default function OnboardingPage() {
                 boxShadow: '0 4px 14px rgba(13, 148, 136, 0.3)',
               }}
             >
-              Próximo <ChevronRight className="w-4 h-4" />
+              {t.onboarding.next} <ChevronRight className="w-4 h-4" />
             </button>
           ) : (
             <button
@@ -314,7 +310,7 @@ export default function OnboardingPage() {
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
-                  <Check className="w-4 h-4" /> Concluir
+                  <Check className="w-4 h-4" /> {t.onboarding.finish}
                 </>
               )}
             </button>
@@ -331,7 +327,7 @@ export default function OnboardingPage() {
           className="block mx-auto mt-4 text-sm cursor-pointer transition-colors hover:underline"
           style={{ color: 'var(--muted)' }}
         >
-          Pular e configurar depois
+          {t.onboarding.skipAndSetupLater}
         </button>
       )}
     </div>

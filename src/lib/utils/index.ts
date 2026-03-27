@@ -1,13 +1,14 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import type { Translations } from '@/lib/i18n';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(date: string | Date, options?: Intl.DateTimeFormatOptions): string {
+export function formatDate(date: string | Date, locale?: string, options?: Intl.DateTimeFormatOptions): string {
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleDateString('pt-BR', {
+  return d.toLocaleDateString(locale || 'pt-BR', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -15,9 +16,9 @@ export function formatDate(date: string | Date, options?: Intl.DateTimeFormatOpt
   });
 }
 
-export function formatDateTime(date: string | Date): string {
+export function formatDateTime(date: string | Date, locale?: string): string {
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleDateString('pt-BR', {
+  return d.toLocaleDateString(locale || 'pt-BR', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -26,15 +27,15 @@ export function formatDateTime(date: string | Date): string {
   });
 }
 
-export function formatTime(date: string | Date): string {
+export function formatTime(date: string | Date, locale?: string): string {
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleTimeString('pt-BR', {
+  return d.toLocaleTimeString(locale || 'pt-BR', {
     hour: '2-digit',
     minute: '2-digit',
   });
 }
 
-export function relativeTime(date: string | Date): string {
+export function relativeTime(date: string | Date, t?: Translations): string {
   const d = typeof date === 'string' ? new Date(date) : date;
   const now = new Date();
   const diff = now.getTime() - d.getTime();
@@ -42,6 +43,15 @@ export function relativeTime(date: string | Date): string {
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
 
+  if (t) {
+    if (minutes < 1) return t.time.justNow;
+    if (minutes < 60) return t.time.minutesAgo(minutes);
+    if (hours < 24) return t.time.hoursAgo(hours);
+    if (days < 7) return t.time.daysAgo(days);
+    return formatDate(d);
+  }
+
+  // Fallback PT-BR
   if (minutes < 1) return 'agora mesmo';
   if (minutes < 60) return `há ${minutes}min`;
   if (hours < 24) return `há ${hours}h`;
